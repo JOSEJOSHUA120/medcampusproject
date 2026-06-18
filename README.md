@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://laravel.com">
-        <img src="https://laravel.com/img/logotype.min.svg" width="400" alt="Laravel Logo">
+        <img src="https://laravel.com/img/logotype.min.svg" alt="Laravel Logo">
     </a>
 </p>
 
