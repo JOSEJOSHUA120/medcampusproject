@@ -4,10 +4,10 @@
   </a>
 </p>
 
-<h1 align="center">MedCampus</h1>
+<h1 align="center">Laravel</h1>
 
 <p align="center">
-Built with Laravel 10
+
 </p>
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
