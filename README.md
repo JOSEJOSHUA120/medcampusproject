@@ -3,11 +3,10 @@
       <img src="https://laravel.com/img/logomark.min.svg" width="120">
   </a>
 </p>
-
-<h1 align="center">Laravel</h1>
+<h1 align="center">LARAVEL</h1>
 
 <p align="center">
-
+    
 </p>
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
