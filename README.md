@@ -1,11 +1,13 @@
 <p align="center">
-    <img src="https://laravel.com/img/logotype.min.svg" width="350">
+  <a href="https://laravel.com">
+      <img src="https://laravel.com/img/logomark.min.svg" width="120">
+  </a>
 </p>
 
 <h1 align="center">MedCampus</h1>
 
 <p align="center">
-Digital Clinic Management System
+Built with Laravel 12
 </p>
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
