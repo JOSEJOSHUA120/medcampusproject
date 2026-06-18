@@ -1,11 +1,5 @@
 <p align="center">
-    <img src="https://laravel.com/img/logotype.min.svg" alt="Laravel Logo" width="400">
-</p>
-
-<h1 align="center">MedCampus</h1>
-
-<p align="center">
-    Digital Clinic Management System
+    <img src="https://laravel.com/img/logotype.min.svg" width="350" alt="Laravel">
 </p>
 
 ---
