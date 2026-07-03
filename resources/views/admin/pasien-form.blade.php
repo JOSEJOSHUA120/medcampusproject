@@ -32,6 +32,10 @@
                 <input type="text" name="no_telp" class="form-input-custom" value="{{ old('no_telp', $pasien->no_telp ?? '') }}">
             </div>
             <div>
+                <label class="form-label">Tempat Lahir</label>
+                <input type="text" name="tempat_lahir" class="form-input-custom" value="{{ old('tempat_lahir', $pasien->tempat_lahir ?? '') }}" placeholder="Kota lahir">
+            </div>
+            <div>
                 <label class="form-label">Tanggal Lahir</label>
                 <input type="date" name="tanggal_lahir" max="{{ date('Y-m-d') }}" class="form-input-custom" value="{{ old('tanggal_lahir', $pasien->tanggal_lahir ?? '') }}">
             </div>

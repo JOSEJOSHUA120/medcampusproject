@@ -78,10 +78,39 @@ class BookingController extends Controller
         return view('admin.booking', compact('data'));
     }
 
+    private function buatAntrianDariBooking($booking)
+    {
+        $pasien = Pasien::where('user_id', $booking->pasien_id)->first();
+        $dokter = User::find($booking->dokter_id)?->dokter;
+        if (!$pasien || !$dokter) return;
+
+        $today = today()->toDateString();
+        $lastAntrian = Antrian::where('dokter_id', $dokter->id)
+            ->whereDate('tanggal_antrian', $today)
+            ->orderBy('nomor_antrian', 'desc')
+            ->first();
+        $nomor = $lastAntrian ? (int)$lastAntrian->nomor_antrian + 1 : 1;
+
+        Antrian::create([
+            'pasien_id' => $pasien->id,
+            'dokter_id' => $dokter->id,
+            'nomor_antrian' => str_pad($nomor, 3, '0', STR_PAD_LEFT),
+            'tanggal_antrian' => $today,
+            'jam_antrian' => now()->format('H:i:s'),
+            'status' => 'dipanggil',
+            'complaint' => $booking->keluhan_awal,
+        ]);
+    }
+
     public function adminBookingApprove($id)
     {
         $booking = Booking::findOrFail($id);
         $booking->update(['status' => 'disetujui']);
+
+        if ($booking->tanggal_booking == today()->toDateString()) {
+            $this->buatAntrianDariBooking($booking);
+        }
+
         return redirect()->back()->with('success', 'Booking berhasil disetujui.');
     }
 
@@ -157,7 +186,7 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Slot tersebut sudah dibooking. Silakan pilih jam lain.')->withInput();
         }
 
-        Booking::create([
+        $booking = Booking::create([
             'pasien_id' => Auth::id(),
             'dokter_id' => $request->dokter_id,
             'jadwal_dokter_id' => $request->jadwal_dokter_id,
@@ -167,7 +196,12 @@ class BookingController extends Controller
             'status' => 'menunggu',
         ]);
 
-        return redirect()->route('pasien.riwayat-booking')->with('success', 'Booking berhasil dibuat. Silakan tunggu konfirmasi.');
+        if ($request->tanggal_booking == today()->toDateString()) {
+            $booking->update(['status' => 'disetujui']);
+            $this->buatAntrianDariBooking($booking);
+        }
+
+        return redirect()->route('pasien.riwayat-booking')->with('success', 'Booking berhasil dibuat.');
     }
 
     public function pasienRiwayat()
@@ -204,6 +238,11 @@ class BookingController extends Controller
     {
         $booking = Booking::where('dokter_id', Auth::id())->findOrFail($id);
         $booking->update(['status' => 'disetujui']);
+
+        if ($booking->tanggal_booking == today()->toDateString()) {
+            $this->buatAntrianDariBooking($booking);
+        }
+
         return redirect()->back()->with('success', 'Booking disetujui.');
     }
 

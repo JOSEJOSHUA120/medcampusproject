@@ -37,12 +37,13 @@ class RegisteredUserController extends Controller
     {
         // Validation: Memastikan data sesuai aturan sebelum diproses
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'no_telp' => 'nullable|numeric|digits_between:10,15',
-            'alamat' => 'nullable|string',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
+            'password' => ['required', 'confirmed', Password::defaults()],
+            'no_telp' => 'nullable',
+            'alamat' => 'nullable',
             'tanggal_lahir' => 'nullable|date|before_or_equal:today',
+            'tempat_lahir' => 'nullable|string|max:100',
             'jenis_kelamin' => 'nullable|in:L,P',
         ]);
 
@@ -60,6 +61,7 @@ class RegisteredUserController extends Controller
             'no_telp' => $request->no_telp,
             'alamat' => $request->alamat,
             'tanggal_lahir' => $request->tanggal_lahir,
+            'tempat_lahir' => $request->tempat_lahir,
             'jenis_kelamin' => $request->jenis_kelamin,
         ]);
 

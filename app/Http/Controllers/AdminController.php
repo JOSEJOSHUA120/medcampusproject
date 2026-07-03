@@ -63,6 +63,7 @@ class AdminController extends Controller
             'nama' => 'required', 'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6', 'no_telp' => 'nullable',
             'alamat' => 'nullable', 'tanggal_lahir' => 'nullable|date|before_or_equal:today',
+            'tempat_lahir' => 'nullable|string|max:100',
             'jenis_kelamin' => 'nullable|in:L,P',
         ]);
         $user = User::create([
@@ -72,6 +73,7 @@ class AdminController extends Controller
         Pasien::create([
             'user_id' => $user->id, 'no_telp' => $request->no_telp,
             'alamat' => $request->alamat, 'tanggal_lahir' => $request->tanggal_lahir,
+            'tempat_lahir' => $request->tempat_lahir,
             'jenis_kelamin' => $request->jenis_kelamin,
         ]);
         return redirect()->route('admin.pasien')->with('success', 'Pasien berhasil ditambahkan.');
@@ -89,13 +91,15 @@ class AdminController extends Controller
         $request->validate([
             'nama' => 'required', 'email' => 'required|email|unique:users,email,' . $pasien->user_id,
             'no_telp' => 'nullable', 'alamat' => 'nullable',
-            'tanggal_lahir' => 'nullable|date|before_or_equal:today', 'jenis_kelamin' => 'nullable|in:L,P',
+            'tanggal_lahir' => 'nullable|date|before_or_equal:today',
+            'tempat_lahir' => 'nullable|string|max:100',
+            'jenis_kelamin' => 'nullable|in:L,P',
         ]);
         $pasien->user->update(['name' => $request->nama, 'email' => $request->email]);
         if ($request->password) {
             $pasien->user->update(['password' => Hash::make($request->password)]);
         }
-        $pasien->update($request->only(['no_telp', 'alamat', 'tanggal_lahir', 'jenis_kelamin']));
+        $pasien->update($request->only(['no_telp', 'alamat', 'tanggal_lahir', 'tempat_lahir', 'jenis_kelamin']));
         return redirect()->route('admin.pasien')->with('success', 'Pasien berhasil diupdate.');
     }
 

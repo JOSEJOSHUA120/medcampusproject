@@ -8,6 +8,46 @@
     <p>Daftar booking janji temu Anda dengan dokter.</p>
 </div>
 
+@php
+    $user = auth()->user();
+    $profil = $user->pasien;
+@endphp
+
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+    <h5 class="font-bold text-gray-800 mb-4">Data Diri Anda</h5>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div>
+            <span class="text-xs text-gray-500 uppercase tracking-wider">Nama</span>
+            <p class="font-medium text-gray-800">{{ $user->name }}</p>
+        </div>
+        <div>
+            <span class="text-xs text-gray-500 uppercase tracking-wider">Email</span>
+            <p class="font-medium text-gray-800">{{ $user->email }}</p>
+        </div>
+        <div>
+            <span class="text-xs text-gray-500 uppercase tracking-wider">No. Telepon</span>
+            <p class="font-medium text-gray-800">{{ $profil->no_telp ?? '-' }}</p>
+        </div>
+        <div>
+            <span class="text-xs text-gray-500 uppercase tracking-wider">Tempat Lahir</span>
+            <p class="font-medium text-gray-800">{{ $profil->tempat_lahir ?? '-' }}</p>
+        </div>
+        <div>
+            <span class="text-xs text-gray-500 uppercase tracking-wider">Tanggal Lahir</span>
+            <p class="font-medium text-gray-800">{{ $profil->tanggal_lahir ? \Carbon\Carbon::parse($profil->tanggal_lahir)->format('d/m/Y') : '-' }}</p>
+        </div>
+        <div>
+            <span class="text-xs text-gray-500 uppercase tracking-wider">Jenis Kelamin</span>
+            <p class="font-medium text-gray-800">
+                @if($profil && $profil->jenis_kelamin == 'L') Laki-Laki
+                @elseif($profil && $profil->jenis_kelamin == 'P') Perempuan
+                @else -
+                @endif
+            </p>
+        </div>
+    </div>
+</div>
+
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
     @if($data->isEmpty())
     <div class="text-center py-8 text-gray-400">
@@ -35,7 +75,7 @@
                     <td class="px-4 py-3 border-b border-gray-100 text-sm font-medium">dr. {{ $b->dokter->name }}</td>
                     <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ \Carbon\Carbon::parse($b->tanggal_booking)->format('d/m/Y') }}</td>
                     <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ \Carbon\Carbon::parse($b->jam_booking)->format('H:i') }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm max-w-[150px] truncate">{{ $b->keluhan_awal ?? '-' }}</td>
+                    <td class="px-4 py-3 border-b border-gray-100 text-sm max-w-[150px] truncate" title="{{ $b->keluhan_awal }}">{{ $b->keluhan_awal ?? '-' }}</td>
                     <td class="px-4 py-3 border-b border-gray-100 text-sm">
                         @php
                             $badgeClass = match($b->status) {

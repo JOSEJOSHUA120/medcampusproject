@@ -45,6 +45,7 @@
             <thead>
                 <tr class="bg-gray-50">
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Pasien</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">No. Telp</th>
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal</th>
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Jam</th>
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Keluhan</th>
@@ -53,8 +54,10 @@
             </thead>
             <tbody class="divide-y divide-gray-100">
                 @forelse($bookingAktif as $b)
+                @php $bp = $b->pasien; $bp_profil = $bp?->pasien; @endphp
                 <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3 text-sm font-medium">{{ $b->pasien->name }}</td>
+                    <td class="px-4 py-3 text-sm font-medium">{{ $bp->name ?? '-' }}</td>
+                    <td class="px-4 py-3 text-sm">{{ $bp_profil?->no_telp ?? '-' }}</td>
                     <td class="px-4 py-3 text-sm">{{ \Carbon\Carbon::parse($b->tanggal_booking)->format('d/m/Y') }}</td>
                     <td class="px-4 py-3 text-sm">{{ \Carbon\Carbon::parse($b->jam_booking)->format('H:i') }}</td>
                     <td class="px-4 py-3 text-sm max-w-[200px] truncate">{{ $b->keluhan_awal ?? '-' }}</td>
@@ -76,7 +79,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="px-4 py-8 text-center text-gray-400 text-sm">Belum ada booking aktif.</td>
+                    <td colspan="6" class="px-4 py-8 text-center text-gray-400 text-sm">Belum ada booking aktif.</td>
                 </tr>
                 @endforelse
             </tbody>
@@ -95,8 +98,8 @@
                 <tr class="bg-gray-50">
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">No. Antrian</th>
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Pasien</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Jam</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">No. Telp</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Keluhan</th>
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
                 </tr>
@@ -106,8 +109,8 @@
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3 text-sm font-bold text-gray-900">{{ $a->nomor_antrian }}</td>
                     <td class="px-4 py-3 text-sm">{{ $a->pasien->user->name ?? '-' }}</td>
-                    <td class="px-4 py-3 text-sm">{{ \Carbon\Carbon::parse($a->tanggal_antrian)->format('Y-m-d') }}</td>
-                    <td class="px-4 py-3 text-sm">{{ \Carbon\Carbon::parse($a->jam_antrian)->format('H:i') }}</td>
+                    <td class="px-4 py-3 text-sm">{{ $a->pasien->no_telp ?? '-' }}</td>
+                    <td class="px-4 py-3 text-sm max-w-[200px] truncate">{{ $a->complaint ?? '-' }}</td>
                     <td class="px-4 py-3 text-sm"><span class="badge-status badge-{{ $a->status }}">{{ ucfirst($a->status) }}</span></td>
                     <td class="px-4 py-3 text-sm">
                         @if($a->status == 'menunggu')
