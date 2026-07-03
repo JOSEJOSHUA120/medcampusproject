@@ -5,108 +5,130 @@
 @section('content')
 <div class="page-header">
     <h4>Daftar Booking Pasien</h4>
-    <p>Semua janji temu pasien yang aktif (hari ini & mendatang).</p>
+    <p>Informasi lengkap pasien yang telah melakukan booking.</p>
 </div>
 
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-    @if($data->isEmpty())
-    <div class="text-center py-8 text-gray-400">
-        <p>Belum ada booking aktif.</p>
-    </div>
-    @else
-    <div class="overflow-x-auto">
-        <table id="dataTable" class="w-full text-left">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">No</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Pasien</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Nama</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">No. Telp</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Tgl Lahir</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Alamat</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Jam</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Keluhan</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($data as $i => $b)
-                @php
-                    $u = $b->pasien;
-                    $p = $u?->pasien;
-                @endphp
-                <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $i + 1 }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">
-                        <img src="{{ $p->foto ?? 'https://i.pravatar.cc/300?u=' . urlencode($u->email ?? '') }}" alt="foto" class="w-10 h-10 rounded-full object-cover border">
-                    </td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm font-medium">{{ $u->name ?? '-' }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $p->no_telp ?? '-' }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $p->tanggal_lahir ? \Carbon\Carbon::parse($p->tanggal_lahir)->format('d/m/Y') : '-' }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm max-w-[150px] truncate" title="{{ $p->alamat ?? '' }}">{{ $p->alamat ?? '-' }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ \Carbon\Carbon::parse($b->tanggal_booking)->format('d/m/Y') }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ \Carbon\Carbon::parse($b->jam_booking)->format('H:i') }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm max-w-[200px] truncate" title="{{ $b->keluhan_awal }}">{{ $b->keluhan_awal ?? '-' }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">
-                        @php
-                            $badgeClass = match($b->status) {
-                                'menunggu' => 'badge-menunggu',
-                                'disetujui' => 'badge-dipanggil',
-                                'ditolak' => 'bg-red-100 text-red-800',
-                                'check_in' => 'bg-indigo-100 text-indigo-800',
-                                'tidak_hadir' => 'bg-gray-100 text-gray-800',
-                                'selesai' => 'badge-selesai',
-                                'dibatalkan' => 'bg-red-100 text-red-800',
-                                default => 'bg-gray-100 text-gray-800',
-                            };
-                        @endphp
-                        <span class="badge-status {{ $badgeClass }}">{{ ucfirst(str_replace('_', ' ', $b->status)) }}</span>
-                    </td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">
-                        <div class="flex gap-1 flex-wrap">
-                            @if($b->status == 'menunggu')
-                            <form action="{{ route('dokter.booking.approve', $b->id) }}" method="POST" class="inline">
-                                @csrf @method('PUT')
-                                <button class="btn-sm btn-success">Setujui</button>
-                            </form>
-                            <button onclick="openReject({{ $b->id }})" class="btn-sm btn-danger">Tolak</button>
-                            @elseif($b->status == 'disetujui')
-                            <form action="{{ route('dokter.booking.mulai-periksa', $b->id) }}" method="POST" class="inline">
-                                @csrf @method('PUT')
-                                <button class="btn-sm btn-primary">Mulai Periksa</button>
-                            </form>
-                            <form action="{{ route('dokter.booking.check-in', $b->id) }}" method="POST" class="inline">
-                                @csrf @method('PUT')
-                                <button class="btn-sm btn-info">Check In</button>
-                            </form>
-                            <button onclick="openReject({{ $b->id }})" class="btn-sm btn-danger">Tolak</button>
-                            @elseif($b->status == 'check_in')
-                            <form action="{{ route('dokter.booking.mulai-periksa', $b->id) }}" method="POST" class="inline">
-                                @csrf @method('PUT')
-                                <button class="btn-sm btn-primary">Mulai Periksa</button>
-                            </form>
-                            <form action="{{ route('dokter.booking.selesai', $b->id) }}" method="POST" class="inline">
-                                @csrf @method('PUT')
-                                <button class="btn-sm btn-success">Selesai</button>
-                            </form>
-                            <form action="{{ route('dokter.booking.tidak-hadir', $b->id) }}" method="POST" class="inline" onsubmit="return confirm('Tandai tidak hadir?')">
-                                @csrf @method('PUT')
-                                <button class="btn-sm btn-danger">Tidak Hadir</button>
-                            </form>
-                            @else
-                            <span class="text-gray-400 text-xs">-</span>
-                            @endif
-                        </div>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-    @endif
+@if($data->isEmpty())
+<div class="text-center py-12 text-gray-400">
+    <p>Belum ada booking aktif.</p>
 </div>
+@else
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    @foreach($data as $b)
+    @php
+        $u = $b->pasien;
+        $p = $u?->pasien;
+        $foto = $p->foto ?? 'https://i.pravatar.cc/300?u=' . urlencode($u->email ?? '');
+        $badgeClass = match($b->status) {
+            'menunggu' => 'badge-menunggu',
+            'disetujui' => 'badge-dipanggil',
+            'ditolak' => 'bg-red-100 text-red-800',
+            'check_in' => 'bg-indigo-100 text-indigo-800',
+            'tidak_hadir' => 'bg-gray-100 text-gray-800',
+            'selesai' => 'badge-selesai',
+            'dibatalkan' => 'bg-red-100 text-red-800',
+            default => 'bg-gray-100 text-gray-800',
+        };
+    @endphp
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-200">
+        <div class="bg-gradient-to-r from-primary-600 to-primary-800 px-5 py-4 flex items-center gap-4">
+            <img src="{{ $foto }}" alt="foto" class="w-14 h-14 rounded-full object-cover border-2 border-white/60 shadow">
+            <div class="text-white">
+                <h5 class="font-bold text-base">{{ $u->name ?? '-' }}</h5>
+                <span class="badge-status {{ $badgeClass }} text-xs">{{ ucfirst(str_replace('_', ' ', $b->status)) }}</span>
+            </div>
+        </div>
+        <div class="p-5 space-y-3">
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                <div>
+                    <span class="text-xs text-gray-400 uppercase tracking-wider">Email</span>
+                    <p class="font-medium text-gray-800 truncate">{{ $u->email ?? '-' }}</p>
+                </div>
+                <div>
+                    <span class="text-xs text-gray-400 uppercase tracking-wider">No. Telepon</span>
+                    <p class="font-medium text-gray-800">{{ $p->no_telp ?? '-' }}</p>
+                </div>
+                <div>
+                    <span class="text-xs text-gray-400 uppercase tracking-wider">Tempat Lahir</span>
+                    <p class="font-medium text-gray-800">{{ $p->tempat_lahir ?? '-' }}</p>
+                </div>
+                <div>
+                    <span class="text-xs text-gray-400 uppercase tracking-wider">Tanggal Lahir</span>
+                    <p class="font-medium text-gray-800">{{ $p->tanggal_lahir ? \Carbon\Carbon::parse($p->tanggal_lahir)->format('d/m/Y') : '-' }}</p>
+                </div>
+                <div>
+                    <span class="text-xs text-gray-400 uppercase tracking-wider">Jenis Kelamin</span>
+                    <p class="font-medium text-gray-800">
+                        @if($p && $p->jenis_kelamin == 'L') Laki-Laki
+                        @elseif($p && $p->jenis_kelamin == 'P') Perempuan
+                        @else -
+                        @endif
+                    </p>
+                </div>
+                <div>
+                    <span class="text-xs text-gray-400 uppercase tracking-wider">No. Booking</span>
+                    <p class="font-medium text-gray-800">#{{ $b->id }}</p>
+                </div>
+            </div>
+            <hr class="border-gray-100">
+            <div class="text-sm">
+                <span class="text-xs text-gray-400 uppercase tracking-wider">Alamat</span>
+                <p class="font-medium text-gray-800">{{ $p->alamat ?? '-' }}</p>
+            </div>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                <div>
+                    <span class="text-xs text-gray-400 uppercase tracking-wider">Tanggal Booking</span>
+                    <p class="font-medium text-gray-800">{{ \Carbon\Carbon::parse($b->tanggal_booking)->format('d/m/Y') }}</p>
+                </div>
+                <div>
+                    <span class="text-xs text-gray-400 uppercase tracking-wider">Jam</span>
+                    <p class="font-medium text-gray-800">{{ \Carbon\Carbon::parse($b->jam_booking)->format('H:i') }}</p>
+                </div>
+            </div>
+            <div class="text-sm">
+                <span class="text-xs text-gray-400 uppercase tracking-wider">Keluhan</span>
+                <p class="font-medium text-gray-800 bg-gray-50 rounded-lg p-2 mt-1">{{ $b->keluhan_awal ?? '-' }}</p>
+            </div>
+            <hr class="border-gray-100">
+            <div class="flex gap-2 flex-wrap pt-1">
+                @if($b->status == 'menunggu')
+                <form action="{{ route('dokter.booking.approve', $b->id) }}" method="POST" class="flex-1">
+                    @csrf @method('PUT')
+                    <button class="btn-sm btn-success w-full">Setujui</button>
+                </form>
+                <button onclick="openReject({{ $b->id }})" class="btn-sm btn-danger flex-1">Tolak</button>
+                @elseif($b->status == 'disetujui')
+                <form action="{{ route('dokter.booking.mulai-periksa', $b->id) }}" method="POST" class="flex-1">
+                    @csrf @method('PUT')
+                    <button class="btn-sm btn-primary w-full">Mulai Periksa</button>
+                </form>
+                <form action="{{ route('dokter.booking.check-in', $b->id) }}" method="POST" class="flex-1">
+                    @csrf @method('PUT')
+                    <button class="btn-sm btn-info w-full">Check In</button>
+                </form>
+                <button onclick="openReject({{ $b->id }})" class="btn-sm btn-danger flex-1">Tolak</button>
+                @elseif($b->status == 'check_in')
+                <form action="{{ route('dokter.booking.mulai-periksa', $b->id) }}" method="POST" class="flex-1">
+                    @csrf @method('PUT')
+                    <button class="btn-sm btn-primary w-full">Mulai Periksa</button>
+                </form>
+                <form action="{{ route('dokter.booking.selesai', $b->id) }}" method="POST" class="flex-1">
+                    @csrf @method('PUT')
+                    <button class="btn-sm btn-success w-full">Selesai</button>
+                </form>
+                <form action="{{ route('dokter.booking.tidak-hadir', $b->id) }}" method="POST" class="flex-1" onsubmit="return confirm('Tandai tidak hadir?')">
+                    @csrf @method('PUT')
+                    <button class="btn-sm btn-danger w-full">Tidak Hadir</button>
+                </form>
+                @else
+                <span class="text-gray-400 text-xs w-full text-center py-2">-</span>
+                @endif
+            </div>
+        </div>
+    </div>
+    @endforeach
+</div>
+@endif
 
 <div id="modalReject" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
@@ -140,7 +162,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('modalReject').addEventListener('click', function(e) {
         if (e.target === this) closeModal();
     });
-    $('#dataTable').DataTable();
 });
 </script>
 @endpush
