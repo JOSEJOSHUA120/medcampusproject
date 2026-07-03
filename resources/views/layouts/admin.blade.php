@@ -64,11 +64,14 @@
                         Laporan
                     </a>
                 </nav>
-                <div class="px-3 py-4 border-t border-white/10">
-                    <div class="px-3 mb-3">
-                        <div class="text-sm font-medium text-white truncate">{{ Auth::user()->name }}</div>
-                        <div class="text-xs text-white/50 truncate">{{ Auth::user()->email }}</div>
-                    </div>
+                    <div class="px-3 py-4 border-t border-white/10">
+                        <div class="px-3 mb-3 flex items-center gap-3">
+                            <img src="{{ Auth::user()->foto ?? 'https://i.pravatar.cc/300?u=' . urlencode(Auth::user()->email) }}" alt="foto" class="w-10 h-10 rounded-full object-cover border-2 border-white/30">
+                            <div class="min-w-0">
+                                <div class="text-sm font-medium text-white truncate">{{ Auth::user()->name }}</div>
+                                <div class="text-xs text-white/50 truncate">{{ Auth::user()->email }}</div>
+                            </div>
+                        </div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="sidebar-link w-full">
@@ -87,7 +90,9 @@
                 </button>
                 <div class="flex items-center gap-3">
                     <a href="{{ route('profile.edit') }}" class="text-sm text-gray-500 hidden sm:block hover:text-primary-600 transition">{{ Auth::user()->name }}</a>
-                    <a href="{{ route('profile.edit') }}" class="w-8 h-8 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold text-sm hover:bg-primary-200 transition">{{ substr(Auth::user()->name, 0, 1) }}</a>
+                    <a href="{{ route('profile.edit') }}" class="w-8 h-8 rounded-full overflow-hidden border-2 border-primary-200 hover:border-primary-400 transition">
+                        <img src="{{ Auth::user()->foto ?? 'https://i.pravatar.cc/300?u=' . urlencode(Auth::user()->email) }}" alt="foto" class="w-full h-full object-cover">
+                    </a>
                 </div>
             </header>
 

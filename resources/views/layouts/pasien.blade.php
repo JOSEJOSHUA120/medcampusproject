@@ -51,11 +51,14 @@
                         Pembayaran
                     </a>
                 </nav>
-                <div class="px-3 py-4 border-t border-white/10">
-                    <div class="px-3 mb-3">
-                        <div class="text-sm font-medium text-white truncate">{{ Auth::user()->name }}</div>
-                        <div class="text-xs text-white/50 truncate">{{ Auth::user()->email }}</div>
-                    </div>
+                    <div class="px-3 py-4 border-t border-white/10">
+                        <div class="px-3 mb-3 flex items-center gap-3">
+                            <img src="{{ Auth::user()->foto ?? (Auth::user()->pasien->foto ?? 'https://i.pravatar.cc/300?u=' . urlencode(Auth::user()->email)) }}" alt="foto" class="w-10 h-10 rounded-full object-cover border-2 border-white/30">
+                            <div class="min-w-0">
+                                <div class="text-sm font-medium text-white truncate">{{ Auth::user()->name }}</div>
+                                <div class="text-xs text-white/50 truncate">{{ Auth::user()->email }}</div>
+                            </div>
+                        </div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="sidebar-link w-full">

@@ -20,6 +20,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'foto',
     ];
 
     // Encapsulation: Field ini akan disembunyikan saat model di-serialize ke JSON

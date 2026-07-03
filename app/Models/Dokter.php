@@ -12,7 +12,7 @@ class Dokter extends Model
 
     protected $table = 'dokter';
     # fillable: field yang boleh diisi massal (Mass Assignment Protection)
-    protected $fillable = ['user_id', 'nama_dokter', 'spesialisasi', 'no_telp'];
+    protected $fillable = ['user_id', 'nama_dokter', 'spesialisasi', 'no_telp', 'foto'];
 
     # Association: Dokter dimiliki oleh satu User (Inverse One-to-One)
     public function user()

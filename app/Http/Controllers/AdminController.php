@@ -69,6 +69,7 @@ class AdminController extends Controller
         $user = User::create([
             'name' => $request->nama, 'email' => $request->email,
             'password' => Hash::make($request->password), 'role' => 'pasien',
+            'foto' => 'https://i.pravatar.cc/300?u=' . urlencode($request->email),
         ]);
         Pasien::create([
             'user_id' => $user->id, 'no_telp' => $request->no_telp,
@@ -132,10 +133,12 @@ class AdminController extends Controller
         $user = User::create([
             'name' => $request->nama_dokter, 'email' => $request->email,
             'password' => Hash::make($request->password), 'role' => 'dokter',
+            'foto' => 'https://i.pravatar.cc/300?u=' . urlencode($request->email),
         ]);
         Dokter::create([
             'user_id' => $user->id, 'nama_dokter' => $request->nama_dokter,
             'spesialisasi' => $request->spesialisasi, 'no_telp' => $request->no_telp,
+            'foto' => 'https://i.pravatar.cc/300?u=' . urlencode($request->email),
         ]);
         return redirect()->route('admin.dokter')->with('success', 'Dokter berhasil ditambahkan.');
     }

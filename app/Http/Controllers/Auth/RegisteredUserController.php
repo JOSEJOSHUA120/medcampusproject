@@ -53,6 +53,7 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'pasien',
+            'foto' => 'https://i.pravatar.cc/300?u=' . urlencode($request->email),
         ]);
 
         // Composition: Membuat data Pasien yang terhubung dengan User baru
