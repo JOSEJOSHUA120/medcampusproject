@@ -30,7 +30,7 @@
             default => 'bg-gray-100 text-gray-800',
         };
     @endphp
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-200">
+    <div class="bg-white rounded-2xl shadow-sm border-2 border-gray-300 overflow-hidden hover:shadow-md hover:border-gray-400 transition-all duration-200">
         <div class="bg-gradient-to-r from-primary-600 to-primary-800 px-5 py-4 flex items-center gap-4">
             <img src="{{ $foto }}" alt="foto" class="w-14 h-14 rounded-full object-cover border-2 border-white/60 shadow">
             <div class="text-white">
