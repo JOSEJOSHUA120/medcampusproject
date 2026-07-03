@@ -13,6 +13,7 @@ use App\Models\RekamMedis;
 use App\Models\Room;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\URL;
 
 class DatabaseSeeder extends Seeder
 {
@@ -26,6 +27,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'password' => bcrypt('password'),
             'role' => 'admin',
+            'foto' => URL::to('/images/admin-profile.jpg'),
         ]);
 
         $dokterUsers = [];
@@ -38,17 +40,20 @@ class DatabaseSeeder extends Seeder
             ['nama_dokter' => 'Dr. Vania Kusuma', 'spesialisasi' => 'Dokter Kulit', 'no_telp' => '081234567813', 'email' => 'vaniakusuma@gmail.com'],
         ];
         foreach ($dokterData as $d) {
+            $isMainDokter = $d['email'] === 'dokter@gmail.com';
             $user = User::create([
                 'name' => $d['nama_dokter'],
                 'email' => $d['email'],
                 'password' => bcrypt('password'),
                 'role' => 'dokter',
+                'foto' => $isMainDokter ? URL::to('/images/doctor-profile.jpg') : null,
             ]);
             $dokterUsers[] = Dokter::create([
                 'user_id' => $user->id,
                 'nama_dokter' => $d['nama_dokter'],
                 'spesialisasi' => $d['spesialisasi'],
                 'no_telp' => $d['no_telp'],
+                'foto' => $isMainDokter ? URL::to('/images/doctor-profile.jpg') : null,
             ]);
         }
 
@@ -59,11 +64,13 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Rudi Hermawan', 'no_telp' => '0816666666', 'alamat' => 'Jl. Diponegoro No.3', 'tanggal_lahir' => '1988-12-10', 'jenis_kelamin' => 'L'],
         ];
         foreach ($pasienData as $i => $p) {
+            $isMainPasien = $i === 0;
             $user = User::create([
                 'name' => $p['name'],
-                'email' => $i === 0 ? "pasien@gmail.com" : "pasien" . ($i + 1) . "@gmail.com",
+                'email' => $isMainPasien ? "pasien@gmail.com" : "pasien" . ($i + 1) . "@gmail.com",
                 'password' => bcrypt('password'),
                 'role' => 'pasien',
+                'foto' => $isMainPasien ? URL::to('/images/user-profile.jpg') : null,
             ]);
             $pasienList[] = Pasien::create([
                 'user_id' => $user->id,
@@ -71,6 +78,7 @@ class DatabaseSeeder extends Seeder
                 'alamat' => $p['alamat'],
                 'tanggal_lahir' => $p['tanggal_lahir'],
                 'jenis_kelamin' => $p['jenis_kelamin'],
+                'foto' => $isMainPasien ? URL::to('/images/user-profile.jpg') : null,
             ]);
         }
 
