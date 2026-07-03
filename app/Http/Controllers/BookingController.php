@@ -229,9 +229,8 @@ class BookingController extends Controller
     {
         $data = Booking::with(['pasien', 'jadwalDokter'])
             ->where('dokter_id', Auth::id())
-            ->where('tanggal_booking', '>=', today())
             ->whereNotIn('status', ['dibatalkan', 'ditolak', 'tidak_hadir', 'selesai'])
-            ->orderBy('tanggal_booking')
+            ->orderBy('tanggal_booking', 'desc')
             ->orderBy('jam_booking')
             ->get();
         return view('dokter.booking', compact('data'));
