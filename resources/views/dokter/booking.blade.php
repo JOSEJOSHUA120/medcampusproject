@@ -59,21 +59,24 @@
                             </form>
                             <button onclick="openReject({{ $b->id }})" class="btn-sm btn-danger">Tolak</button>
                             @elseif($b->status == 'disetujui')
+                            <form action="{{ route('dokter.booking.mulai-periksa', $b->id) }}" method="POST" class="inline">
+                                @csrf @method('PUT')
+                                <button class="btn-sm btn-primary">Mulai Periksa</button>
+                            </form>
                             <form action="{{ route('dokter.booking.check-in', $b->id) }}" method="POST" class="inline">
                                 @csrf @method('PUT')
-                                <button class="btn-sm btn-primary">Check In</button>
+                                <button class="btn-sm btn-info">Check In</button>
                             </form>
                             <button onclick="openReject({{ $b->id }})" class="btn-sm btn-danger">Tolak</button>
                             @elseif($b->status == 'check_in')
+                            <form action="{{ route('dokter.booking.mulai-periksa', $b->id) }}" method="POST" class="inline">
+                                @csrf @method('PUT')
+                                <button class="btn-sm btn-primary">Mulai Periksa</button>
+                            </form>
                             <form action="{{ route('dokter.booking.selesai', $b->id) }}" method="POST" class="inline">
                                 @csrf @method('PUT')
                                 <button class="btn-sm btn-success">Selesai</button>
                             </form>
-                            <form action="{{ route('dokter.booking.tidak-hadir', $b->id) }}" method="POST" class="inline" onsubmit="return confirm('Tandai tidak hadir?')">
-                                @csrf @method('PUT')
-                                <button class="btn-sm btn-danger">Tidak Hadir</button>
-                            </form>
-                            @elseif($b->status == 'disetujui' || $b->status == 'menunggu')
                             <form action="{{ route('dokter.booking.tidak-hadir', $b->id) }}" method="POST" class="inline" onsubmit="return confirm('Tandai tidak hadir?')">
                                 @csrf @method('PUT')
                                 <button class="btn-sm btn-danger">Tidak Hadir</button>

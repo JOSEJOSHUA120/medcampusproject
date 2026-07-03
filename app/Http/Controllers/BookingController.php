@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Antrian;
 use App\Models\Booking;
 use App\Models\JadwalDokter;
+use App\Models\Pasien;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -237,6 +239,38 @@ class BookingController extends Controller
     }
 
     // ===================== DOKTER: ALL BOOKINGS =====================
+
+    public function dokterMulaiPeriksa($id)
+    {
+        $booking = Booking::where('dokter_id', Auth::id())->findOrFail($id);
+
+        $pasien = Pasien::where('user_id', $booking->pasien_id)->firstOrFail();
+        $dokter = auth()->user()->dokter;
+
+        $today = today()->toDateString();
+        $lastAntrian = Antrian::where('dokter_id', $dokter->id)
+            ->whereDate('tanggal_antrian', $today)
+            ->orderBy('nomor_antrian', 'desc')
+            ->first();
+        $nomor = $lastAntrian ? (int)$lastAntrian->nomor_antrian + 1 : 1;
+
+        $antrian = Antrian::create([
+            'pasien_id' => $pasien->id,
+            'dokter_id' => $dokter->id,
+            'nomor_antrian' => str_pad($nomor, 3, '0', STR_PAD_LEFT),
+            'tanggal_antrian' => $today,
+            'jam_antrian' => now()->format('H:i:s'),
+            'status' => 'dipanggil',
+            'complaint' => $booking->keluhan_awal,
+        ]);
+
+        if ($booking->status !== 'check_in') {
+            $booking->update(['status' => 'check_in']);
+        }
+
+        return redirect()->route('dokter.rekam-medis.create', $antrian->id)
+            ->with('success', 'Pasien siap diperiksa. Silakan buat rekam medis.');
+    }
 
     public function dokterSemuaBooking()
     {

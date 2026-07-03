@@ -24,6 +24,7 @@
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Jam</th>
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Keluhan</th>
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -48,6 +49,18 @@
                             };
                         @endphp
                         <span class="badge-status {{ $badgeClass }}">{{ ucfirst(str_replace('_', ' ', $b->status)) }}</span>
+                    </td>
+                    <td class="px-4 py-3 border-b border-gray-100 text-sm">
+                        <div class="flex gap-1 flex-wrap">
+                            @if(in_array($b->status, ['disetujui', 'check_in']))
+                            <form action="{{ route('dokter.booking.mulai-periksa', $b->id) }}" method="POST" class="inline">
+                                @csrf @method('PUT')
+                                <button class="btn-sm btn-primary">Mulai Periksa</button>
+                            </form>
+                            @else
+                            <span class="text-gray-400 text-xs">-</span>
+                            @endif
+                        </div>
                     </td>
                 </tr>
                 @endforeach

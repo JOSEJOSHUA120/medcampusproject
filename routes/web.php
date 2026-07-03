@@ -117,6 +117,7 @@ Route::middleware(['auth', 'dokter'])->prefix('dokter')->name('dokter.')->group(
     Route::put('/booking/{id}/check-in', [BookingController::class, 'dokterCheckIn'])->name('booking.check-in');
     Route::put('/booking/{id}/selesai', [BookingController::class, 'dokterSelesai'])->name('booking.selesai');
     Route::put('/booking/{id}/tidak-hadir', [BookingController::class, 'dokterTidakHadir'])->name('booking.tidak-hadir');
+    Route::put('/booking/{id}/mulai-periksa', [BookingController::class, 'dokterMulaiPeriksa'])->name('booking.mulai-periksa');
 });
 
 Route::middleware(['auth', 'pasien'])->prefix('pasien')->name('pasien.')->group(function () {
