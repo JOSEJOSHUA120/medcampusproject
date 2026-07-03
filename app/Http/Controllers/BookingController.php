@@ -199,12 +199,7 @@ class BookingController extends Controller
             'status' => 'menunggu',
         ]);
 
-        if ($request->tanggal_booking == today()->toDateString()) {
-            $booking->update(['status' => 'disetujui']);
-            $this->buatAntrianDariBooking($booking);
-        }
-
-        return redirect()->route('pasien.riwayat-booking')->with('success', 'Booking berhasil dibuat.');
+        return redirect()->route('pasien.riwayat-booking')->with('success', 'Booking berhasil dibuat. Silakan tunggu konfirmasi admin.');
     }
 
     public function pasienRiwayat()
