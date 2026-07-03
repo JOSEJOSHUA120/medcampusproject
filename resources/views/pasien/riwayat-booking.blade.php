@@ -15,6 +15,13 @@
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
     <h5 class="font-bold text-gray-800 mb-4">Data Diri Anda</h5>
+    <div class="flex items-center gap-4 mb-4">
+        <img src="{{ $profil->foto ?? 'https://i.pravatar.cc/300?u=' . urlencode($user->email) }}" alt="foto" class="w-16 h-16 rounded-full object-cover border-2 border-primary-200">
+        <div>
+            <p class="font-bold text-gray-800 text-lg">{{ $user->name }}</p>
+            <p class="text-sm text-gray-500">{{ $user->email }}</p>
+        </div>
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div>
             <span class="text-xs text-gray-500 uppercase tracking-wider">Nama</span>

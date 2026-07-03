@@ -14,7 +14,7 @@ class Pasien extends Model
     protected $table = 'pasien';
 
     # Encapsulation: Field yang boleh diisi massal (Mass Assignment Protection)
-    protected $fillable = ['user_id', 'no_telp', 'alamat', 'tanggal_lahir', 'tempat_lahir', 'jenis_kelamin'];
+    protected $fillable = ['user_id', 'no_telp', 'alamat', 'tanggal_lahir', 'tempat_lahir', 'jenis_kelamin', 'foto'];
 
     # Association (ORM): Inverse One-to-One — Pasien dimiliki oleh satu User
     public function user()

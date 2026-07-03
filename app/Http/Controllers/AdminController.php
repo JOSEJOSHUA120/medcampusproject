@@ -75,6 +75,7 @@ class AdminController extends Controller
             'alamat' => $request->alamat, 'tanggal_lahir' => $request->tanggal_lahir,
             'tempat_lahir' => $request->tempat_lahir,
             'jenis_kelamin' => $request->jenis_kelamin,
+            'foto' => 'https://i.pravatar.cc/300?u=' . urlencode($request->email),
         ]);
         return redirect()->route('admin.pasien')->with('success', 'Pasien berhasil ditambahkan.');
     }

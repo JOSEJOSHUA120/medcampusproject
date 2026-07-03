@@ -72,10 +72,13 @@ class BookingController extends Controller
 
     public function adminBooking()
     {
-        $data = Booking::with(['pasien', 'dokter', 'jadwalDokter'])
+        $bookings = Booking::with(['pasien', 'dokter', 'jadwalDokter'])
             ->orderBy('created_at', 'desc')
             ->get();
-        return view('admin.booking', compact('data'));
+        $antrians = Antrian::with(['pasien.user', 'dokter.user', 'room'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return view('admin.booking', compact('bookings', 'antrians'));
     }
 
     private function buatAntrianDariBooking($booking)

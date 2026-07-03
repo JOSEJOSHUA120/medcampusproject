@@ -56,7 +56,12 @@
                 @forelse($bookingAktif as $b)
                 @php $bp = $b->pasien; $bp_profil = $bp?->pasien; @endphp
                 <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3 text-sm font-medium">{{ $bp->name ?? '-' }}</td>
+                    <td class="px-4 py-3 text-sm">
+                        <div class="flex items-center gap-2">
+                            <img src="{{ $bp_profil->foto ?? 'https://i.pravatar.cc/300?u=' . urlencode($bp->email ?? '') }}" alt="foto" class="w-8 h-8 rounded-full object-cover border">
+                            <span class="font-medium">{{ $bp->name ?? '-' }}</span>
+                        </div>
+                    </td>
                     <td class="px-4 py-3 text-sm">{{ $bp_profil?->no_telp ?? '-' }}</td>
                     <td class="px-4 py-3 text-sm">{{ \Carbon\Carbon::parse($b->tanggal_booking)->format('d/m/Y') }}</td>
                     <td class="px-4 py-3 text-sm">{{ \Carbon\Carbon::parse($b->jam_booking)->format('H:i') }}</td>
@@ -108,7 +113,12 @@
                 @forelse($dataAntrian as $a)
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3 text-sm font-bold text-gray-900">{{ $a->nomor_antrian }}</td>
-                    <td class="px-4 py-3 text-sm">{{ $a->pasien->user->name ?? '-' }}</td>
+                    <td class="px-4 py-3 text-sm">
+                        <div class="flex items-center gap-2">
+                            <img src="{{ $a->pasien->foto ?? 'https://i.pravatar.cc/300?u=' . urlencode($a->pasien->user->email ?? '') }}" alt="foto" class="w-8 h-8 rounded-full object-cover border">
+                            {{ $a->pasien->user->name ?? '-' }}
+                        </div>
+                    </td>
                     <td class="px-4 py-3 text-sm">{{ $a->pasien->no_telp ?? '-' }}</td>
                     <td class="px-4 py-3 text-sm max-w-[200px] truncate">{{ $a->complaint ?? '-' }}</td>
                     <td class="px-4 py-3 text-sm"><span class="badge-status badge-{{ $a->status }}">{{ ucfirst($a->status) }}</span></td>

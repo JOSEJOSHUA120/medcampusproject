@@ -63,6 +63,7 @@ class RegisteredUserController extends Controller
             'tanggal_lahir' => $request->tanggal_lahir,
             'tempat_lahir' => $request->tempat_lahir,
             'jenis_kelamin' => $request->jenis_kelamin,
+            'foto' => 'https://i.pravatar.cc/300?u=' . urlencode($request->email),
         ]);
 
         // Event: Memicu event Registered untuk fungsionalitas tambahan (e.g., verifikasi email)
