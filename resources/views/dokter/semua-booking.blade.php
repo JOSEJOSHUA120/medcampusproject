@@ -1,11 +1,11 @@
 @extends('layouts.dokter')
 
-@section('title', 'Semua Booking')
+@section('title', 'Booking & Antrian')
 
 @section('content')
 <div class="page-header">
-    <h4>Semua Booking</h4>
-    <p>Riwayat semua booking pasien.</p>
+    <h4>Booking & Antrian</h4>
+    <p>Riwayat semua booking dan antrian pasien.</p>
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
