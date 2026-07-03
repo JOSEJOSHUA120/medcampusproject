@@ -14,8 +14,10 @@
     <nav class="bg-primary-900 text-white sticky top-0 z-50 shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <a href="/" class="flex items-center gap-2 font-display font-extrabold text-xl tracking-tight">
-                    <svg class="w-8 h-8 text-primary-300" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4v6H4v4h6v6h4v-6h6v-4h-6V4h-4z"/></svg>
+                <a href="/" class="flex items-center gap-3 font-display font-extrabold text-xl tracking-tight">
+                    <div class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-blue-300 to-blue-500">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4v6H4v4h6v6h4v-6h6v-4h-6V4h-4z"/></svg>
+                    </div>
                     MEDCAMPUS
                 </a>
                 <div class="flex items-center gap-1 sm:gap-2">
@@ -42,8 +44,10 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div class="md:col-span-2">
-                    <div class="flex items-center gap-2 font-display font-extrabold text-xl text-white mb-3">
-                        <svg class="w-7 h-7 text-primary-400" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4v6H4v4h6v6h4v-6h6v-4h-6V4h-4z"/></svg>
+                    <div class="flex items-center gap-3 font-display font-extrabold text-xl text-white mb-3">
+                        <div class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-blue-300 to-blue-500">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4v6H4v4h6v6h4v-6h6v-4h-6V4h-4z"/></svg>
+                        </div>
                         MEDCAMPUS
                     </div>
                     <p class="text-sm leading-relaxed">Klinik Digital - Solusi Kesehatan Modern untuk Anda. Kelola kesehatan dengan mudah melalui platform digital kami.</p>

@@ -3,13 +3,15 @@
 namespace Database\Seeders;
 
 use App\Models\Antrian;
+use App\Models\Booking;
 use App\Models\Dokter;
+use App\Models\JadwalDokter;
 use App\Models\Obat;
 use App\Models\Pasien;
 use App\Models\Pembayaran;
 use App\Models\RekamMedis;
+use App\Models\Room;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -28,14 +30,17 @@ class DatabaseSeeder extends Seeder
 
         $dokterUsers = [];
         $dokterData = [
-            ['nama_dokter' => 'Dr. Axel Mahendra', 'spesialisasi' => 'Umum', 'no_telp' => '0811111111'],
-            ['nama_dokter' => 'Dr. Siti Rahma', 'spesialisasi' => 'Anak', 'no_telp' => '0812222222'],
-            ['nama_dokter' => 'Dr. Budi Santoso', 'spesialisasi' => 'Gigi', 'no_telp' => '0813333333'],
+            ['nama_dokter' => 'Dr. Axel Mahendra', 'spesialisasi' => 'Umum', 'no_telp' => '0811111111', 'email' => 'dokter@gmail.com'],
+            ['nama_dokter' => 'Dr. Siti Rahma', 'spesialisasi' => 'Anak', 'no_telp' => '0812222222', 'email' => 'dokter2@gmail.com'],
+            ['nama_dokter' => 'Dr. Budi Santoso', 'spesialisasi' => 'Gigi', 'no_telp' => '0813333333', 'email' => 'dokter3@gmail.com'],
+            ['nama_dokter' => 'Dr. Adrian Wijaya', 'spesialisasi' => 'Dokter Mata', 'no_telp' => '081234567814', 'email' => 'adrianwijaya@gmail.com'],
+            ['nama_dokter' => 'Dr. Celine Maharani', 'spesialisasi' => 'Dokter Saraf', 'no_telp' => '081234567817', 'email' => 'celinemaharani@gmail.com'],
+            ['nama_dokter' => 'Dr. Vania Kusuma', 'spesialisasi' => 'Dokter Kulit', 'no_telp' => '081234567813', 'email' => 'vaniakusuma@gmail.com'],
         ];
-        foreach ($dokterData as $i => $d) {
+        foreach ($dokterData as $d) {
             $user = User::create([
                 'name' => $d['nama_dokter'],
-                'email' => $i === 0 ? "dokter@gmail.com" : "dokter" . ($i + 1) . "@gmail.com",
+                'email' => $d['email'],
                 'password' => bcrypt('password'),
                 'role' => 'dokter',
             ]);
@@ -69,28 +74,57 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        $obatList = [];
-        $obatData = [
-            ['nama_obat' => 'Paracetamol 500mg', 'harga' => 15000, 'satuan' => 'tablet', 'keterangan' => 'Obat demam & nyeri'],
-            ['nama_obat' => 'Amoxicillin 250mg', 'harga' => 25000, 'satuan' => 'kapsul', 'keterangan' => 'Antibiotik'],
-            ['nama_obat' => 'Ibuprofen 400mg', 'harga' => 20000, 'satuan' => 'tablet', 'keterangan' => 'Anti inflamasi'],
-            ['nama_obat' => 'CTM 4mg', 'harga' => 5000, 'satuan' => 'tablet', 'keterangan' => 'Antihistamin / alergi'],
-            ['nama_obat' => 'Vitamin C 500mg', 'harga' => 10000, 'satuan' => 'tablet', 'keterangan' => 'Suplemen vitamin'],
-            ['nama_obat' => 'Antasida DOEN', 'harga' => 12000, 'satuan' => 'tablet', 'keterangan' => 'Obat maag'],
-            ['nama_obat' => 'Salep Betadine 10g', 'harga' => 35000, 'satuan' => 'tube', 'keterangan' => 'Antiseptik luka'],
-            ['nama_obat' => 'Dextromethorphan', 'harga' => 18000, 'satuan' => 'tablet', 'keterangan' => 'Obat batuk kering'],
-        ];
-        foreach ($obatData as $o) {
-            $obatList[] = Obat::create($o);
+        $rooms = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $rooms[] = Room::create([
+                'room_number' => 'R-' . str_pad($i, 2, '0', STR_PAD_LEFT),
+                'status' => 'free',
+                'description' => 'Ruangan praktek ' . $i,
+            ]);
+        }
+
+        Obat::factory()->count(100)->create();
+
+        $hariMapping = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        $jadwalList = [];
+        foreach ($dokterUsers as $di => $dokter) {
+            $user = $dokter->user;
+            $hariDokter = array_slice($hariMapping, ($di * 2) % 6, 3);
+            foreach ($hariDokter as $hi => $hari) {
+                $jamMulai = 8 + $hi * 3;
+                $jadwalList[] = JadwalDokter::create([
+                    'user_id' => $user->id,
+                    'hari' => $hari,
+                    'jam_mulai' => sprintf('%02d:00', $jamMulai),
+                    'jam_selesai' => sprintf('%02d:00', $jamMulai + 2),
+                    'durasi_slot' => 30,
+                    'kuota' => 4,
+                    'status' => 'aktif',
+                ]);
+            }
+        }
+
+        foreach ($pasienList as $pi => $pasien) {
+            if ($pi < 2 && isset($jadwalList[$pi])) {
+                Booking::create([
+                    'pasien_id' => $pasien->user_id,
+                    'dokter_id' => $dokterUsers[$pi]->user_id,
+                    'jadwal_dokter_id' => $jadwalList[$pi]->id,
+                    'tanggal_booking' => $today,
+                    'jam_booking' => sprintf('%02d:00', 8 + $pi),
+                    'keluhan_awal' => $pi === 0 ? 'Batuk pilek, ingin periksa' : 'Demam tinggi, ingin konsultasi',
+                    'status' => $pi === 0 ? 'menunggu' : 'disetujui',
+                ]);
+            }
         }
 
         $antrianList = [];
         $antrianData = [
-            ['pasien' => 0, 'dokter' => 0, 'tanggal' => $yesterday, 'jam' => '08:00', 'status' => 'selesai'],
-            ['pasien' => 1, 'dokter' => 0, 'tanggal' => $yesterday, 'jam' => '08:30', 'status' => 'selesai'],
-            ['pasien' => 2, 'dokter' => 1, 'tanggal' => $today, 'jam' => '09:00', 'status' => 'menunggu'],
-            ['pasien' => 0, 'dokter' => 1, 'tanggal' => $today, 'jam' => '10:00', 'status' => 'dipanggil'],
-            ['pasien' => 1, 'dokter' => 2, 'tanggal' => $today, 'jam' => '11:00', 'status' => 'diperiksa'],
+            ['pasien' => 0, 'dokter' => 0, 'tanggal' => $yesterday, 'jam' => '08:00', 'status' => 'selesai', 'complaint' => 'Batuk pilek sejak 3 hari', 'pain' => 3],
+            ['pasien' => 1, 'dokter' => 0, 'tanggal' => $yesterday, 'jam' => '08:30', 'status' => 'selesai', 'complaint' => 'Demam tinggi 38.5°C', 'pain' => 6],
+            ['pasien' => 2, 'dokter' => 1, 'tanggal' => $today, 'jam' => '09:00', 'status' => 'menunggu', 'complaint' => 'Sakit perut bagian bawah', 'pain' => 5],
+            ['pasien' => 0, 'dokter' => 1, 'tanggal' => $today, 'jam' => '10:00', 'status' => 'dipanggil', 'complaint' => 'Sakit kepala migrain', 'pain' => 7],
+            ['pasien' => 1, 'dokter' => 2, 'tanggal' => $today, 'jam' => '11:00', 'status' => 'sedang_dilayani', 'complaint' => 'Sakit gigi berlubang', 'pain' => 8],
         ];
         foreach ($antrianData as $i => $a) {
             $antrianList[] = Antrian::create([
@@ -100,6 +134,9 @@ class DatabaseSeeder extends Seeder
                 'tanggal_antrian' => $a['tanggal'],
                 'jam_antrian' => $a['jam'] . ':00',
                 'status' => $a['status'],
+                'complaint' => $a['complaint'],
+                'pain_level' => $a['pain'],
+                'duration' => $i < 2 ? '3 hari' : ($i === 2 ? '2 hari' : ($i === 3 ? '1 minggu' : '1 hari')),
             ]);
         }
 
@@ -108,6 +145,7 @@ class DatabaseSeeder extends Seeder
             ['pasien' => 0, 'dokter' => 0, 'antrian' => 0, 'diagnosa' => 'Batuk pilek', 'tindakan' => 'Terapi uap', 'catatan' => 'Minum air hangat', 'resep' => "Paracetamol 500mg 3x1\nAmoxicillin 250mg 2x1"],
             ['pasien' => 1, 'dokter' => 0, 'antrian' => 1, 'diagnosa' => 'Demam tinggi', 'tindakan' => 'Kompres hangat', 'catatan' => 'Istirahat total', 'resep' => "Paracetamol 500mg 3x1\nIbuprofen 400mg 2x1"],
         ];
+        $obatList = Obat::take(8)->get();
         foreach ($rekamMedisData as $i => $r) {
             $rm = RekamMedis::create([
                 'pasien_id' => $pasienList[$r['pasien']]->id,
@@ -119,7 +157,7 @@ class DatabaseSeeder extends Seeder
                 'resep_obat' => $r['resep'],
             ]);
 
-            if ($i === 0) {
+            if ($i === 0 && $obatList->count() >= 2) {
                 $rm->resepObat()->create([
                     'obat_id' => $obatList[0]->id,
                     'jumlah' => 10,

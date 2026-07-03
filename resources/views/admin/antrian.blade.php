@@ -32,14 +32,14 @@
                     <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ \Carbon\Carbon::parse($a->jam_antrian)->format('H:i') }}</td>
                     <td class="px-4 py-3 border-b border-gray-100 text-sm"><span class="badge-status badge-{{ $a->status }}">{{ ucfirst($a->status) }}</span></td>
                     <td class="px-4 py-3 border-b border-gray-100 text-sm">
-                        <form action="{{ route('admin.antrian.status', $a->id) }}" method="POST" class="flex gap-1">
+                        <form action="{{ route('admin.kelola-antrian.status', $a->id) }}" method="POST" class="flex gap-1">
                             @csrf @method('PUT')
                             <select name="status" class="form-select-custom text-xs py-1 px-2 w-auto">
                                 <option value="menunggu" @selected($a->status=='menunggu')>Menunggu</option>
                                 <option value="dipanggil" @selected($a->status=='dipanggil')>Dipanggil</option>
-                                <option value="diperiksa" @selected($a->status=='diperiksa')>Diperiksa</option>
+                                <option value="sedang_dilayani" @selected($a->status=='sedang_dilayani')>Diperiksa</option>
                                 <option value="selesai" @selected($a->status=='selesai')>Selesai</option>
-                                <option value="batal" @selected($a->status=='batal')>Batal</option>
+                                <option value="dibatalkan" @selected($a->status=='dibatalkan')>Batal</option>
                             </select>
                             <button class="btn-sm btn-primary">Update</button>
                         </form>

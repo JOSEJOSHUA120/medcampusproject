@@ -57,6 +57,6 @@
 
 <div class="flex gap-3 mt-6">
     <a href="{{ route('pasien.ambil-antrian') }}" class="btn-primary">Ambil Antrian</a>
-    <a href="{{ route('pasien.riwayat-kunjungan') }}" class="btn-secondary">Riwayat Kunjungan</a>
+    <a href="{{ route('pasien.jadwal-saya') }}" class="btn-secondary">Jadwal Saya</a>
 </div>
 @endsection

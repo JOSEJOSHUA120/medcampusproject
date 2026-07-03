@@ -7,6 +7,8 @@ use App\Models\Dokter;
 use App\Models\Pasien;
 use App\Models\Pembayaran;
 use App\Models\RekamMedis;
+use App\Models\User;
+use App\Notifications\AppointmentNotification;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,7 +18,7 @@ class PasienController extends Controller
     public function dashboard()
     {
         $pasien = auth()->user()->pasien;
-        $antrianSekarang = Antrian::where('pasien_id', $pasien->id)->whereDate('tanggal_antrian', today())->whereNotIn('status', ['batal', 'selesai'])->orderBy('created_at', 'desc')->first();
+        $antrianSekarang = Antrian::where('pasien_id', $pasien->id)->whereDate('tanggal_antrian', today())->whereNotIn('status', ['dibatalkan', 'selesai'])->orderBy('created_at', 'desc')->first();
         $jumlahKunjungan = Antrian::where('pasien_id', $pasien->id)->count();
         $jumlahRekamMedis = RekamMedis::where('pasien_id', $pasien->id)->count();
         $pembayaranTerakhir = Pembayaran::whereHas('rekamMedis', function ($q) use ($pasien) {
@@ -34,21 +36,30 @@ class PasienController extends Controller
 
     public function storeAntrian(Request $request)
     {
-        $request->validate(['dokter_id' => 'required|exists:dokter,id']);
+        $request->validate([
+            'dokter_id' => 'required|exists:dokter,id',
+            'complaint' => 'nullable|string',
+            'notes' => 'nullable|string',
+        ]);
         $pasien = auth()->user()->pasien;
 
         $today = today()->toDateString();
         $lastAntrian = Antrian::where('dokter_id', $request->dokter_id)->whereDate('tanggal_antrian', $today)->orderBy('nomor_antrian', 'desc')->first();
         $nomor = $lastAntrian ? (int)$lastAntrian->nomor_antrian + 1 : 1;
 
-        Antrian::create([
+        $antrian = Antrian::create([
             'pasien_id' => $pasien->id,
             'dokter_id' => $request->dokter_id,
             'nomor_antrian' => str_pad($nomor, 3, '0', STR_PAD_LEFT),
             'tanggal_antrian' => $today,
             'jam_antrian' => now()->format('H:i:s'),
             'status' => 'menunggu',
+            'complaint' => $request->complaint,
+            'notes' => $request->notes,
         ]);
+
+        $pasien->user->notify(new AppointmentNotification($antrian, 'created'));
+        $antrian->dokter->user->notify(new AppointmentNotification($antrian, 'new_patient'));
 
         return redirect()->route('pasien.dashboard')->with('success', 'Antrian berhasil diambil. Nomor antrian: ' . str_pad($nomor, 3, '0', STR_PAD_LEFT));
     }
@@ -57,17 +68,38 @@ class PasienController extends Controller
     {
         $antrian = Antrian::where('pasien_id', auth()->user()->pasien->id)->findOrFail($id);
         if ($antrian->status === 'menunggu') {
-            $antrian->update(['status' => 'batal']);
+            $antrian->update(['status' => 'dibatalkan']);
             return redirect()->back()->with('success', 'Antrian dibatalkan.');
         }
         return redirect()->back()->with('error', 'Antrian tidak dapat dibatalkan.');
     }
 
-    public function riwayatKunjungan()
+    public function jadwalSaya()
     {
         $pasien = auth()->user()->pasien;
-        $data = Antrian::where('pasien_id', $pasien->id)->with('dokter.user')->orderBy('tanggal_antrian', 'desc')->orderBy('jam_antrian', 'desc')->get();
-        return view('pasien.riwayat-kunjungan', compact('data'));
+        $data = Antrian::where('pasien_id', $pasien->id)->with(['dokter.user', 'room'])->orderBy('tanggal_antrian', 'desc')->orderBy('jam_antrian', 'desc')->get();
+        return view('pasien.jadwal-saya', compact('data'));
+    }
+
+    public function konfirmasiHadir($id)
+    {
+        $pasien = auth()->user()->pasien;
+        $antrian = Antrian::where('pasien_id', $pasien->id)->findOrFail($id);
+
+        if ($antrian->status === 'menunggu') {
+            $antrian->update(['status' => 'dikonfirmasi']);
+
+            $antrian->dokter->user->notify(new AppointmentNotification($antrian, 'patient_confirmed'));
+
+            $adminUsers = User::where('role', 'admin')->get();
+            foreach ($adminUsers as $admin) {
+                $admin->notify(new AppointmentNotification($antrian, 'patient_confirmed'));
+            }
+
+            return redirect()->back()->with('success', 'Konfirmasi kehadiran berhasil.');
+        }
+
+        return redirect()->back()->with('error', 'Antrian tidak dapat dikonfirmasi. Pastikan status antrian masih menunggu.');
     }
 
     public function rekamMedis()

@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Antrian;
+use App\Models\Booking;
 use App\Models\Dokter;
 use App\Models\Obat;
 use App\Models\Pasien;
 use App\Models\Pembayaran;
 use App\Models\RekamMedis;
 use App\Models\ResepObat;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class DokterController extends Controller
@@ -17,7 +19,7 @@ class DokterController extends Controller
     {
         $dokter = auth()->user()->dokter;
         $pasienHariIni = Antrian::where('dokter_id', $dokter->id)->whereDate('tanggal_antrian', today())->count();
-        $pemeriksaanHariIni = Antrian::where('dokter_id', $dokter->id)->whereDate('tanggal_antrian', today())->whereIn('status', ['diperiksa', 'selesai'])->count();
+        $pemeriksaanHariIni = Antrian::where('dokter_id', $dokter->id)->whereDate('tanggal_antrian', today())->whereIn('status', ['sedang_dilayani', 'selesai'])->count();
         $antrianMenunggu = Antrian::where('dokter_id', $dokter->id)->whereDate('tanggal_antrian', today())->where('status', 'menunggu')->count();
         $antrianDipanggil = Antrian::where('dokter_id', $dokter->id)->whereDate('tanggal_antrian', today())->where('status', 'dipanggil')->count();
         $dataAntrian = Antrian::where('dokter_id', $dokter->id)
@@ -26,14 +28,27 @@ class DokterController extends Controller
             ->orderBy('nomor_antrian')
             ->get();
 
-        return view('dokter.dashboard', compact('pasienHariIni', 'pemeriksaanHariIni', 'antrianMenunggu', 'antrianDipanggil', 'dataAntrian'));
+        $bookingAktif = Booking::with(['pasien', 'jadwalDokter'])
+            ->where('dokter_id', auth()->id())
+            ->where('tanggal_booking', '>=', today())
+            ->whereNotIn('status', ['dibatalkan', 'ditolak', 'tidak_hadir', 'selesai'])
+            ->orderBy('tanggal_booking')
+            ->orderBy('jam_booking')
+            ->get();
+        $bookingMenunggu = $bookingAktif->where('status', 'menunggu')->count();
+        $bookingDisetujui = $bookingAktif->where('status', 'disetujui')->count();
+
+        return view('dokter.dashboard', compact(
+            'pasienHariIni', 'pemeriksaanHariIni', 'antrianMenunggu', 'antrianDipanggil', 'dataAntrian',
+            'bookingAktif', 'bookingMenunggu', 'bookingDisetujui'
+        ));
     }
 
     public function antrian()
     {
         $dokter = auth()->user()->dokter;
-        $data = Antrian::where('dokter_id', $dokter->id)->with('pasien.user')
-            ->orderBy('tanggal_antrian', 'desc')->orderBy('nomor_antrian')->get();
+        $data = Antrian::where('dokter_id', $dokter->id)->with(['pasien.user', 'room'])
+            ->orderBy('created_at', 'desc')->get();
         return view('dokter.antrian', compact('data'));
     }
 
@@ -47,7 +62,7 @@ class DokterController extends Controller
     public function mulaiPeriksa($id)
     {
         $antrian = Antrian::findOrFail($id);
-        $antrian->update(['status' => 'diperiksa']);
+        $antrian->update(['status' => 'sedang_dilayani']);
         return redirect()->back()->with('success', 'Pemeriksaan dimulai.');
     }
 
@@ -61,8 +76,7 @@ class DokterController extends Controller
     public function rekamMedisCreate($antrianId)
     {
         $antrian = Antrian::with('pasien.user')->findOrFail($antrianId);
-        $daftarObat = Obat::orderBy('nama_obat')->get();
-        return view('dokter.rekam-medis-form', compact('antrian', 'daftarObat'));
+        return view('dokter.rekam-medis-form', compact('antrian'));
     }
 
     public function rekamMedisStore(Request $request, $antrianId)
@@ -72,10 +86,7 @@ class DokterController extends Controller
             'diagnosa' => 'required',
             'tindakan' => 'nullable',
             'catatan_dokter' => 'nullable',
-            'obat_id' => 'nullable|array',
-            'obat_id.*' => 'exists:obat,id',
-            'jumlah' => 'nullable|array',
-            'jumlah.*' => 'integer|min:1',
+            'resep_obat' => 'nullable|string',
         ]);
 
         $rm = RekamMedis::create([
@@ -88,28 +99,11 @@ class DokterController extends Controller
             'resep_obat' => $request->resep_obat,
         ]);
 
-        $totalBiaya = 0;
-        if ($request->obat_id) {
-            foreach ($request->obat_id as $i => $obatId) {
-                $obat = Obat::findOrFail($obatId);
-                $jumlah = $request->jumlah[$i] ?? 1;
-                $subtotal = $obat->harga * $jumlah;
-                ResepObat::create([
-                    'rekam_medis_id' => $rm->id,
-                    'obat_id' => $obat->id,
-                    'jumlah' => $jumlah,
-                    'harga_satuan' => $obat->harga,
-                    'subtotal' => $subtotal,
-                ]);
-                $totalBiaya += $subtotal;
-            }
-        }
-
         $antrian->update(['status' => 'selesai']);
         Pembayaran::create([
             'rekam_medis_id' => $rm->id,
             'status_bayar' => 'belum_bayar',
-            'total_biaya' => $totalBiaya,
+            'total_biaya' => 0,
         ]);
         return redirect()->route('dokter.rekam-medis')->with('success', 'Rekam medis berhasil dibuat.');
     }
@@ -117,8 +111,7 @@ class DokterController extends Controller
     public function rekamMedisEdit($id)
     {
         $rekamMedis = RekamMedis::with(['pasien.user', 'antrian', 'resepObat.obat'])->findOrFail($id);
-        $daftarObat = Obat::orderBy('nama_obat')->get();
-        return view('dokter.rekam-medis-form', compact('rekamMedis', 'daftarObat'));
+        return view('dokter.rekam-medis-form', compact('rekamMedis'));
     }
 
     public function rekamMedisUpdate(Request $request, $id)
@@ -128,34 +121,9 @@ class DokterController extends Controller
             'diagnosa' => 'required',
             'tindakan' => 'nullable',
             'catatan_dokter' => 'nullable',
-            'obat_id' => 'nullable|array',
-            'obat_id.*' => 'exists:obat,id',
-            'jumlah' => 'nullable|array',
-            'jumlah.*' => 'integer|min:1',
+            'resep_obat' => 'nullable|string',
         ]);
         $rekamMedis->update($request->only(['diagnosa', 'tindakan', 'catatan_dokter', 'resep_obat']));
-
-        $rekamMedis->resepObat()->delete();
-        $totalBiaya = 0;
-        if ($request->obat_id) {
-            foreach ($request->obat_id as $i => $obatId) {
-                $obat = Obat::findOrFail($obatId);
-                $jumlah = $request->jumlah[$i] ?? 1;
-                $subtotal = $obat->harga * $jumlah;
-                ResepObat::create([
-                    'rekam_medis_id' => $rekamMedis->id,
-                    'obat_id' => $obat->id,
-                    'jumlah' => $jumlah,
-                    'harga_satuan' => $obat->harga,
-                    'subtotal' => $subtotal,
-                ]);
-                $totalBiaya += $subtotal;
-            }
-        }
-
-        if ($rekamMedis->pembayaran) {
-            $rekamMedis->pembayaran->update(['total_biaya' => $totalBiaya]);
-        }
 
         return redirect()->route('dokter.rekam-medis')->with('success', 'Rekam medis berhasil diupdate.');
     }
@@ -169,5 +137,13 @@ class DokterController extends Controller
             $q->where('dokter_id', $dokter->id)->orderBy('created_at', 'desc');
         }])->get();
         return view('dokter.riwayat-pasien', compact('pasien'));
+    }
+
+    public function antrianDownloadPdf($id)
+    {
+        $dokter = auth()->user()->dokter;
+        $antrian = Antrian::where('dokter_id', $dokter->id)->findOrFail($id);
+        $pdf = Pdf::loadView('dokter.antrian-pdf', compact('antrian'));
+        return $pdf->download("data-pasien-{$antrian->nomor_antrian}.pdf");
     }
 }

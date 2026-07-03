@@ -45,4 +45,19 @@ class User extends Authenticatable
     {
         return $this->hasOne(Dokter::class);
     }
+
+    public function jadwalDokter()
+    {
+        return $this->hasMany(JadwalDokter::class, 'user_id');
+    }
+
+    public function bookingsAsDokter()
+    {
+        return $this->hasMany(Booking::class, 'dokter_id');
+    }
+
+    public function bookingsAsPasien()
+    {
+        return $this->hasMany(Booking::class, 'pasien_id');
+    }
 }

@@ -8,7 +8,7 @@
     <p>Selamat datang, {{ auth()->user()->name }}! Kelola antrian dan pemeriksaan.</p>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
     <div class="stat-card border-l-primary-500">
         <div class="stat-value">{{ $pasienHariIni }}</div>
         <div class="stat-label">Pasien Hari Ini</div>
@@ -24,6 +24,63 @@
     <div class="stat-card border-l-green-400">
         <div class="stat-value">{{ $antrianDipanggil }}</div>
         <div class="stat-label">Antrian Dipanggil</div>
+    </div>
+    <div class="stat-card border-l-blue-400">
+        <div class="stat-value">{{ $bookingMenunggu }}</div>
+        <div class="stat-label">Booking Menunggu</div>
+    </div>
+    <div class="stat-card border-l-purple-400">
+        <div class="stat-value">{{ $bookingDisetujui }}</div>
+        <div class="stat-label">Booking Disetujui</div>
+    </div>
+</div>
+
+<div class="card-dashboard p-4 mb-6">
+    <div class="flex items-center justify-between mb-4">
+        <h5 class="font-bold text-gray-800">Booking Aktif</h5>
+        <a href="{{ route('dokter.booking') }}" class="btn-primary btn-sm">Lihat Semua</a>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left">
+            <thead>
+                <tr class="bg-gray-50">
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Pasien</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Jam</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Keluhan</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                @forelse($bookingAktif as $b)
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3 text-sm font-medium">{{ $b->pasien->name }}</td>
+                    <td class="px-4 py-3 text-sm">{{ \Carbon\Carbon::parse($b->tanggal_booking)->format('d/m/Y') }}</td>
+                    <td class="px-4 py-3 text-sm">{{ \Carbon\Carbon::parse($b->jam_booking)->format('H:i') }}</td>
+                    <td class="px-4 py-3 text-sm max-w-[200px] truncate">{{ $b->keluhan_awal ?? '-' }}</td>
+                    <td class="px-4 py-3 text-sm">
+                        @php
+                            $badgeClass = match($b->status) {
+                                'menunggu' => 'badge-menunggu',
+                                'disetujui' => 'badge-dipanggil',
+                                'ditolak' => 'bg-red-100 text-red-800',
+                                'check_in' => 'bg-indigo-100 text-indigo-800',
+                                'tidak_hadir' => 'bg-gray-100 text-gray-800',
+                                'selesai' => 'badge-selesai',
+                                'dibatalkan' => 'bg-red-100 text-red-800',
+                                default => 'bg-gray-100 text-gray-800',
+                            };
+                        @endphp
+                        <span class="badge-status {{ $badgeClass }}">{{ ucfirst(str_replace('_', ' ', $b->status)) }}</span>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="5" class="px-4 py-8 text-center text-gray-400 text-sm">Belum ada booking aktif.</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -63,10 +120,10 @@
                             @csrf @method('PUT')
                             <button class="btn-primary btn-sm">Mulai Periksa</button>
                         </form>
-                        @elseif($a->status == 'diperiksa')
+                        @elseif($a->status == 'sedang_dilayani')
                         <a href="{{ route('dokter.rekam-medis.create', $a->id) }}" class="btn-success btn-sm">Selesai & Buat Rekam Medis</a>
                         @else
-                        <span class="text-gray-400 text-xs">{{ $a->status == 'selesai' ? 'Selesai' : ($a->status == 'batal' ? 'Batal' : '-') }}</span>
+                        <span class="text-gray-400 text-xs">{{ $a->status == 'selesai' ? 'Selesai' : ($a->status == 'dibatalkan' ? 'Batal' : '-') }}</span>
                         @endif
                     </td>
                 </tr>

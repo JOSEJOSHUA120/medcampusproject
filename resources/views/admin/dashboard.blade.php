@@ -15,12 +15,15 @@
     <div class="stat-card"><div class="stat-value">{{ $totalObat }}</div><div class="stat-label">Total Obat</div></div>
     <div class="stat-card"><div class="stat-value">{{ $antrianHariIni }}</div><div class="stat-label">Antrian Hari Ini</div></div>
     <div class="stat-card"><div class="stat-value">Rp {{ number_format($pendapatanBulanIni, 0, ',', '.') }}</div><div class="stat-label">Pendapatan Bulan Ini</div></div>
+    <div class="stat-card"><div class="stat-value">{{ $totalBooking }}</div><div class="stat-label">Total Booking</div></div>
+    <div class="stat-card"><div class="stat-value">{{ $bookingMenunggu }}</div><div class="stat-label">Booking Menunggu</div></div>
+    <div class="stat-card"><div class="stat-value">{{ $bookingHariIni }}</div><div class="stat-label">Booking Hari Ini</div></div>
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
     <div class="flex items-center justify-between mb-4">
         <h5 class="font-bold text-gray-800">Antrian Hari Ini</h5>
-        <a href="{{ route('admin.antrian') }}" class="btn-sm btn-primary">Lihat Semua</a>
+        <a href="{{ route('admin.kelola-antrian') }}" class="btn-sm btn-primary">Lihat Semua</a>
     </div>
     <div class="overflow-x-auto">
         <table class="w-full text-left">

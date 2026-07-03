@@ -33,7 +33,7 @@
             </div>
             <div>
                 <label class="form-label">Tanggal Lahir</label>
-                <input type="date" name="tanggal_lahir" class="form-input-custom" value="{{ old('tanggal_lahir', $pasien->tanggal_lahir ?? '') }}">
+                <input type="date" name="tanggal_lahir" max="{{ date('Y-m-d') }}" class="form-input-custom" value="{{ old('tanggal_lahir', $pasien->tanggal_lahir ?? '') }}">
             </div>
             <div>
                 <label class="form-label">Jenis Kelamin</label>

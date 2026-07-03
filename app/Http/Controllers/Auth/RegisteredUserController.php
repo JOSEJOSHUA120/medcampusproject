@@ -42,7 +42,7 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'no_telp' => 'nullable|string|max:20',
             'alamat' => 'nullable|string',
-            'tanggal_lahir' => 'nullable|date',
+            'tanggal_lahir' => 'nullable|date|before_or_equal:today',
             'jenis_kelamin' => 'nullable|in:L,P',
         ]);
 

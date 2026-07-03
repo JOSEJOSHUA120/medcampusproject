@@ -5,23 +5,34 @@
 @section('content')
 <div class="page-header">
     <h4>Ambil Antrian</h4>
-    <p>Pilih dokter untuk mengambil nomor antrian.</p>
+    <p>Pilih dokter dan isi keluhan Anda untuk mengambil nomor antrian.</p>
 </div>
 
 <div class="card-dashboard p-6 mb-6">
     <form action="{{ route('pasien.antrian.store') }}" method="POST">
         @csrf
-        <div class="mb-4">
-            <label class="form-label">Pilih Dokter <span class="text-red-500">*</span></label>
-            <select name="dokter_id" class="form-select-custom @error('dokter_id') border-red-400 @enderror" required>
-                <option value="">-- Pilih Dokter --</option>
-                @foreach($dokter as $d)
-                <option value="{{ $d->id }}">
-                    dr. {{ $d->user->name ?? $d->nama_dokter }} ({{ $d->spesialisasi }})
-                </option>
-                @endforeach
-            </select>
-            @error('dokter_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+        <div class="grid grid-cols-1 gap-4 mb-4">
+            <div>
+                <label class="form-label">Pilih Dokter <span class="text-red-500">*</span></label>
+                <select name="dokter_id" class="form-select-custom @error('dokter_id') border-red-400 @enderror" required>
+                    <option value="">-- Pilih Dokter --</option>
+                    @foreach($dokter as $d)
+                    <option value="{{ $d->id }}">
+                        dr. {{ $d->user->name ?? $d->nama_dokter }} ({{ $d->spesialisasi }})
+                    </option>
+                    @endforeach
+                </select>
+                @error('dokter_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+            </div>
+            <div>
+                <label class="form-label">Keluhan <span class="text-red-500">*</span></label>
+                <textarea name="complaint" class="form-input-custom @error('complaint') border-red-400 @enderror" rows="3" required>{{ old('complaint') }}</textarea>
+                @error('complaint')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+            </div>
+            <div>
+                <label class="form-label">Catatan Tambahan</label>
+                <input type="text" name="notes" class="form-input-custom" value="{{ old('notes') }}" placeholder="Opsional">
+            </div>
         </div>
         <div class="flex items-center gap-3">
             <button type="submit" class="btn-primary">Ambil Antrian</button>

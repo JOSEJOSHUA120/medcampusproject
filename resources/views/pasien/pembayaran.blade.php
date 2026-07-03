@@ -47,7 +47,6 @@
     </div>
 </div>
 
-{{-- Modal Pembayaran: Form untuk memilih metode bayar dan melakukan pembayaran --}}
 <div id="modalBayar" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-screen overflow-y-auto p-6">
         <div class="flex items-center justify-between mb-4">
@@ -56,7 +55,7 @@
         </div>
         <form id="formBayar" method="POST">
             @csrf @method('PUT')
-            <div class="mb-4 p-4 bg-gray-50 rounded-xl">
+            <div class="mb-4 p-4 bg-gradient-to-r from-blue-50 to-sky-50 rounded-xl border border-blue-100">
                 <p class="text-sm text-gray-500">Total Tagihan</p>
                 <p id="totalTagihan" class="text-2xl font-bold text-gray-800">Rp 0</p>
             </div>
@@ -66,21 +65,20 @@
                 <input type="number" name="jumlah_bayar" id="jumlahBayar" class="form-input-custom w-full" required min="0" placeholder="Masukkan nominal pembayaran">
             </div>
 
-            {{-- Pilihan Metode Pembayaran: Tunai, QRIS, Transfer Bank --}}
             <div class="mb-4">
                 <label class="form-label">Metode Pembayaran <span class="text-red-500">*</span></label>
                 <div class="grid grid-cols-3 gap-2" id="metodeContainer">
-                    <label class="metode-option border rounded-xl p-3 text-center cursor-pointer hover:border-sky-400 transition selected-metode" data-value="tunai">
+                    <label class="metode-option border rounded-xl p-3 text-center cursor-pointer hover:border-blue-400 transition selected-metode" data-value="tunai">
                         <input type="radio" name="metode_bayar" value="tunai" class="hidden" checked>
                         <div class="text-2xl mb-1">&#x1F4B5;</div>
                         <div class="text-xs font-semibold">Tunai</div>
                     </label>
-                    <label class="metode-option border rounded-xl p-3 text-center cursor-pointer hover:border-sky-400 transition" data-value="qris">
+                    <label class="metode-option border rounded-xl p-3 text-center cursor-pointer hover:border-blue-400 transition" data-value="qris">
                         <input type="radio" name="metode_bayar" value="qris" class="hidden">
                         <div class="text-2xl mb-1">&#x1F4F1;</div>
                         <div class="text-xs font-semibold">QRIS</div>
                     </label>
-                    <label class="metode-option border rounded-xl p-3 text-center cursor-pointer hover:border-sky-400 transition" data-value="transfer">
+                    <label class="metode-option border rounded-xl p-3 text-center cursor-pointer hover:border-blue-400 transition" data-value="transfer">
                         <input type="radio" name="metode_bayar" value="transfer" class="hidden">
                         <div class="text-2xl mb-1">&#x1F3E6;</div>
                         <div class="text-xs font-semibold">Transfer</div>
@@ -88,37 +86,114 @@
                 </div>
             </div>
 
-            {{-- Panel QRIS --}}
             <div id="panelQris" class="mb-4 hidden">
-                <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center">
-                    <div class="w-40 h-40 mx-auto mb-3 bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center">
-                        <div class="text-center p-2">
-                            <svg viewBox="0 0 100 100" class="w-full h-full">
-                                <rect x="5" y="5" width="20" height="20" fill="black"/>
-                                <rect x="30" y="5" width="10" height="10" fill="black"/>
-                                <rect x="50" y="5" width="10" height="10" fill="black"/>
-                                <rect x="70" y="5" width="20" height="20" fill="black"/>
-                                <rect x="5" y="30" width="10" height="10" fill="black"/>
-                                <rect x="50" y="30" width="10" height="10" fill="black"/>
-                                <rect x="80" y="30" width="10" height="10" fill="black"/>
-                                <rect x="5" y="50" width="20" height="10" fill="black"/>
-                                <rect x="30" y="50" width="20" height="10" fill="black"/>
-                                <rect x="70" y="50" width="20" height="10" fill="black"/>
-                                <rect x="5" y="70" width="20" height="20" fill="black"/>
-                                <rect x="30" y="70" width="10" height="10" fill="black"/>
-                                <rect x="50" y="70" width="10" height="10" fill="black"/>
-                                <rect x="70" y="70" width="20" height="20" fill="black"/>
-                                <rect x="30" y="30" width="15" height="15" fill="white" stroke="black" stroke-width="2"/>
-                                <circle cx="37" cy="37" r="2" fill="black"/>
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 text-center">
+                        <span class="text-white font-bold text-lg tracking-wider">QRIS</span>
+                    </div>
+                    <div class="p-6 text-center">
+                        <div class="w-48 h-48 mx-auto mb-3 bg-white p-2 rounded-lg shadow-sm border border-gray-100">
+                            <svg viewBox="0 0 200 200" class="w-full h-full">
+                                <rect x="8" y="8" width="44" height="44" fill="white" stroke="black" stroke-width="3"/>
+                                <rect x="12" y="12" width="8" height="8" fill="black"/>
+                                <rect x="24" y="12" width="8" height="8" fill="black"/>
+                                <rect x="36" y="12" width="8" height="8" fill="black"/>
+                                <rect x="12" y="24" width="8" height="8" fill="black"/>
+                                <rect x="36" y="24" width="8" height="8" fill="black"/>
+                                <rect x="12" y="36" width="8" height="8" fill="black"/>
+                                <rect x="24" y="36" width="8" height="8" fill="black"/>
+                                <rect x="36" y="36" width="8" height="8" fill="black"/>
+
+                                <rect x="148" y="8" width="44" height="44" fill="white" stroke="black" stroke-width="3"/>
+                                <rect x="152" y="12" width="8" height="8" fill="black"/>
+                                <rect x="164" y="12" width="8" height="8" fill="black"/>
+                                <rect x="176" y="12" width="8" height="8" fill="black"/>
+                                <rect x="152" y="24" width="8" height="8" fill="black"/>
+                                <rect x="176" y="24" width="8" height="8" fill="black"/>
+                                <rect x="152" y="36" width="8" height="8" fill="black"/>
+                                <rect x="164" y="36" width="8" height="8" fill="black"/>
+                                <rect x="176" y="36" width="8" height="8" fill="black"/>
+
+                                <rect x="8" y="148" width="44" height="44" fill="white" stroke="black" stroke-width="3"/>
+                                <rect x="12" y="152" width="8" height="8" fill="black"/>
+                                <rect x="24" y="152" width="8" height="8" fill="black"/>
+                                <rect x="36" y="152" width="8" height="8" fill="black"/>
+                                <rect x="12" y="164" width="8" height="8" fill="black"/>
+                                <rect x="36" y="164" width="8" height="8" fill="black"/>
+                                <rect x="12" y="176" width="8" height="8" fill="black"/>
+                                <rect x="24" y="176" width="8" height="8" fill="black"/>
+                                <rect x="36" y="176" width="8" height="8" fill="black"/>
+
+                                <rect x="64" y="12" width="8" height="8" fill="black"/>
+                                <rect x="80" y="12" width="8" height="8" fill="black"/>
+                                <rect x="96" y="12" width="8" height="8" fill="white"/>
+                                <rect x="112" y="12" width="8" height="8" fill="black"/>
+                                <rect x="128" y="12" width="8" height="8" fill="black"/>
+                                <rect x="12" y="68" width="8" height="8" fill="black"/>
+                                <rect x="28" y="68" width="8" height="8" fill="black"/>
+                                <rect x="44" y="68" width="8" height="8" fill="white"/>
+                                <rect x="60" y="68" width="8" height="8" fill="black"/>
+                                <rect x="84" y="68" width="8" height="8" fill="black"/>
+                                <rect x="108" y="68" width="8" height="8" fill="black"/>
+                                <rect x="124" y="68" width="8" height="8" fill="white"/>
+                                <rect x="148" y="68" width="8" height="8" fill="black"/>
+                                <rect x="164" y="68" width="8" height="8" fill="black"/>
+                                <rect x="180" y="68" width="8" height="8" fill="black"/>
+                                <rect x="12" y="84" width="8" height="8" fill="white"/>
+                                <rect x="36" y="84" width="8" height="8" fill="black"/>
+                                <rect x="60" y="84" width="8" height="8" fill="black"/>
+                                <rect x="84" y="84" width="8" height="8" fill="white"/>
+                                <rect x="100" y="84" width="8" height="8" fill="black"/>
+                                <rect x="132" y="84" width="8" height="8" fill="black"/>
+                                <rect x="148" y="84" width="8" height="8" fill="white"/>
+                                <rect x="172" y="84" width="8" height="8" fill="black"/>
+                                <rect x="12" y="100" width="8" height="8" fill="black"/>
+                                <rect x="36" y="100" width="8" height="8" fill="white"/>
+                                <rect x="52" y="100" width="8" height="8" fill="black"/>
+                                <rect x="76" y="100" width="8" height="8" fill="black"/>
+                                <rect x="100" y="100" width="8" height="8" fill="black"/>
+                                <rect x="116" y="100" width="8" height="8" fill="white"/>
+                                <rect x="140" y="100" width="8" height="8" fill="white"/>
+                                <rect x="164" y="100" width="8" height="8" fill="black"/>
+                                <rect x="180" y="100" width="8" height="8" fill="black"/>
+                                <rect x="12" y="116" width="8" height="8" fill="black"/>
+                                <rect x="36" y="116" width="8" height="8" fill="white"/>
+                                <rect x="60" y="116" width="8" height="8" fill="black"/>
+                                <rect x="84" y="116" width="8" height="8" fill="black"/>
+                                <rect x="100" y="116" width="8" height="8" fill="white"/>
+                                <rect x="132" y="116" width="8" height="8" fill="black"/>
+                                <rect x="148" y="116" width="8" height="8" fill="black"/>
+                                <rect x="172" y="116" width="8" height="8" fill="black"/>
+                                <rect x="12" y="132" width="8" height="8" fill="black"/>
+                                <rect x="28" y="132" width="8" height="8" fill="black"/>
+                                <rect x="44" y="132" width="8" height="8" fill="white"/>
+                                <rect x="76" y="132" width="8" height="8" fill="white"/>
+                                <rect x="108" y="132" width="8" height="8" fill="black"/>
+                                <rect x="124" y="132" width="8" height="8" fill="black"/>
+                                <rect x="148" y="132" width="8" height="8" fill="black"/>
+                                <rect x="164" y="132" width="8" height="8" fill="white"/>
+                                <rect x="180" y="132" width="8" height="8" fill="black"/>
+                                <rect x="64" y="180" width="8" height="8" fill="white"/>
+                                <rect x="80" y="180" width="8" height="8" fill="black"/>
+                                <rect x="96" y="180" width="8" height="8" fill="black"/>
+                                <rect x="112" y="180" width="8" height="8" fill="white"/>
+                                <rect x="128" y="180" width="8" height="8" fill="black"/>
+
+                                <rect x="84" y="84" width="32" height="32" fill="white" rx="4"/>
+                                <text x="100" y="103" text-anchor="middle" font-size="9" font-weight="bold" fill="#1D4ED8">QR</text>
+                                <text x="100" y="114" text-anchor="middle" font-size="7" font-weight="bold" fill="#1D4ED8">IS</text>
                             </svg>
-                            <p class="text-xs font-bold text-gray-700 mt-1">QRIS</p>
+                        </div>
+                        <p id="qrisAmount" class="text-xl font-bold text-gray-800 mb-1">Rp 0</p>
+                        <p class="text-xs text-gray-500 mb-3">MEDCAMPUS KLINIK DIGITAL</p>
+                        <div class="bg-gray-50 rounded-lg px-3 py-2 text-xs text-gray-500">
+                            <p>Scan QRIS di atas menggunakan aplikasi</p>
+                            <p>pembayaran (GoPay, OVO, Dana, dll)</p>
                         </div>
                     </div>
-                    <p class="text-sm text-gray-500">Scan QRIS di atas menggunakan aplikasi pembayaran (GoPay, OVO, Dana, dll)</p>
                 </div>
             </div>
 
-            {{-- Panel Transfer Bank --}}
             <div id="panelTransfer" class="mb-4 hidden">
                 <div class="mb-3">
                     <label class="form-label">Pilih Bank <span class="text-red-500">*</span></label>
@@ -143,38 +218,34 @@
 
 @push('scripts')
 <script>
-// openBayar: Membuka modal pembayaran dengan data tagihan
 function openBayar(id, total) {
     document.getElementById('formBayar').action = "{{ url('pasien/pembayaran') }}/" + id + "/bayar";
     document.getElementById('totalTagihan').textContent = 'Rp ' + total;
+    document.getElementById('qrisAmount').textContent = 'Rp ' + total;
     document.getElementById('jumlahBayar').value = total.replace(/\./g, '');
     document.getElementById('modalBayar').classList.remove('hidden');
     document.getElementById('modalBayar').classList.add('flex');
     toggleMetode('tunai');
 }
 
-// closeModal: Menutup modal
 function closeModal() {
     document.getElementById('modalBayar').classList.add('hidden');
     document.getElementById('modalBayar').classList.remove('flex');
 }
 
-// toggleMetode: Menampilkan panel sesuai metode bayar yang dipilih
 function toggleMetode(val) {
     document.getElementById('panelQris').classList.add('hidden');
     document.getElementById('panelTransfer').classList.add('hidden');
     if (val === 'qris') document.getElementById('panelQris').classList.remove('hidden');
     if (val === 'transfer') document.getElementById('panelTransfer').classList.remove('hidden');
-    // Update visual selected
     document.querySelectorAll('.metode-option').forEach(function(el) {
-        el.classList.remove('selected-metode', 'border-sky-500', 'bg-sky-50');
+        el.classList.remove('selected-metode', 'border-blue-500', 'bg-blue-50');
         if (el.dataset.value === val) {
-            el.classList.add('selected-metode', 'border-sky-500', 'bg-sky-50');
+            el.classList.add('selected-metode', 'border-blue-500', 'bg-blue-50');
         }
     });
 }
 
-// Event listener untuk pilihan metode
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.metode-option').forEach(function(el) {
         el.addEventListener('click', function() {
@@ -183,7 +254,6 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleMetode(val);
         });
     });
-    // Tutup modal saat klik di luar
     document.getElementById('modalBayar').addEventListener('click', function(e) {
         if (e.target === this) closeModal();
     });

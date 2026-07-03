@@ -60,7 +60,7 @@
         </table>
         @endif
 
-        <div class="mt-4 p-4 bg-gray-50 rounded-xl text-center">
+        <div class="mt-4 p-4 bg-gradient-to-r from-blue-50 to-sky-50 rounded-xl text-center border border-blue-100">
             <p class="text-2xl font-bold text-primary-600">Rp {{ number_format($pembayaran->total_biaya, 0, ',', '.') }}</p>
             <p class="text-xs text-gray-500">Total Tagihan</p>
         </div>
@@ -74,12 +74,12 @@
             <div class="mb-4">
                 <label class="form-label">Metode Pembayaran <span class="text-red-500">*</span></label>
                 <div class="grid grid-cols-2 gap-3">
-                    <label class="border rounded-xl p-4 text-center cursor-pointer hover:border-sky-400 transition metode-option" data-value="qris" onclick="togglePanel('qris')">
+                    <label class="border rounded-xl p-4 text-center cursor-pointer hover:border-blue-400 transition metode-option selected-metode" data-value="qris" onclick="togglePanel('qris')">
                         <input type="radio" name="metode_bayar" value="qris" class="hidden" checked>
                         <div class="text-3xl mb-1">📱</div>
                         <div class="text-xs font-semibold">QRIS</div>
                     </label>
-                    <label class="border rounded-xl p-4 text-center cursor-pointer hover:border-sky-400 transition metode-option" data-value="transfer" onclick="togglePanel('transfer')">
+                    <label class="border rounded-xl p-4 text-center cursor-pointer hover:border-blue-400 transition metode-option" data-value="transfer" onclick="togglePanel('transfer')">
                         <input type="radio" name="metode_bayar" value="transfer" class="hidden">
                         <div class="text-3xl mb-1">🏦</div>
                         <div class="text-xs font-semibold">Transfer Bank</div>
@@ -88,33 +88,69 @@
             </div>
 
             <div id="panelQris" class="mb-4">
-                <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center mb-4">
-                    <div class="w-40 h-40 mx-auto bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center mb-3">
-                        <div class="text-center p-2">
-                            <svg viewBox="0 0 100 100" class="w-full h-full">
-                                <rect x="5" y="5" width="20" height="20" fill="black"/>
-                                <rect x="30" y="5" width="10" height="10" fill="black"/>
-                                <rect x="50" y="5" width="10" height="10" fill="black"/>
-                                <rect x="70" y="5" width="20" height="20" fill="black"/>
-                                <rect x="5" y="30" width="10" height="10" fill="black"/>
-                                <rect x="50" y="30" width="10" height="10" fill="black"/>
-                                <rect x="80" y="30" width="10" height="10" fill="black"/>
-                                <rect x="5" y="50" width="20" height="10" fill="black"/>
-                                <rect x="30" y="50" width="20" height="10" fill="black"/>
-                                <rect x="70" y="50" width="20" height="10" fill="black"/>
-                                <rect x="5" y="70" width="20" height="20" fill="black"/>
-                                <rect x="30" y="70" width="10" height="10" fill="black"/>
-                                <rect x="50" y="70" width="10" height="10" fill="black"/>
-                                <rect x="70" y="70" width="20" height="20" fill="black"/>
-                                <rect x="30" y="30" width="15" height="15" fill="white" stroke="black" stroke-width="2"/>
-                                <circle cx="37" cy="37" r="2" fill="black"/>
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 text-center">
+                        <span class="text-white font-bold text-lg tracking-wider">QRIS</span>
+                    </div>
+                    <div class="p-6 text-center">
+                        <div class="w-48 h-48 mx-auto mb-3 bg-white p-2 rounded-lg shadow-sm border border-gray-100">
+                            <svg viewBox="0 0 200 200" class="w-full h-full">
+                                <rect x="8" y="8" width="44" height="44" fill="white" stroke="black" stroke-width="3"/>
+                                <rect x="12" y="12" width="8" height="8" fill="black"/><rect x="24" y="12" width="8" height="8" fill="black"/>
+                                <rect x="36" y="12" width="8" height="8" fill="black"/><rect x="12" y="24" width="8" height="8" fill="black"/>
+                                <rect x="36" y="24" width="8" height="8" fill="black"/><rect x="12" y="36" width="8" height="8" fill="black"/>
+                                <rect x="24" y="36" width="8" height="8" fill="black"/><rect x="36" y="36" width="8" height="8" fill="black"/>
+                                <rect x="148" y="8" width="44" height="44" fill="white" stroke="black" stroke-width="3"/>
+                                <rect x="152" y="12" width="8" height="8" fill="black"/><rect x="164" y="12" width="8" height="8" fill="black"/>
+                                <rect x="176" y="12" width="8" height="8" fill="black"/><rect x="152" y="24" width="8" height="8" fill="black"/>
+                                <rect x="176" y="24" width="8" height="8" fill="black"/><rect x="152" y="36" width="8" height="8" fill="black"/>
+                                <rect x="164" y="36" width="8" height="8" fill="black"/><rect x="176" y="36" width="8" height="8" fill="black"/>
+                                <rect x="8" y="148" width="44" height="44" fill="white" stroke="black" stroke-width="3"/>
+                                <rect x="12" y="152" width="8" height="8" fill="black"/><rect x="24" y="152" width="8" height="8" fill="black"/>
+                                <rect x="36" y="152" width="8" height="8" fill="black"/><rect x="12" y="164" width="8" height="8" fill="black"/>
+                                <rect x="36" y="164" width="8" height="8" fill="black"/><rect x="12" y="176" width="8" height="8" fill="black"/>
+                                <rect x="24" y="176" width="8" height="8" fill="black"/><rect x="36" y="176" width="8" height="8" fill="black"/>
+                                <rect x="64" y="12" width="8" height="8" fill="black"/><rect x="80" y="12" width="8" height="8" fill="black"/>
+                                <rect x="96" y="12" width="8" height="8" fill="white"/><rect x="112" y="12" width="8" height="8" fill="black"/>
+                                <rect x="128" y="12" width="8" height="8" fill="black"/><rect x="12" y="68" width="8" height="8" fill="black"/>
+                                <rect x="28" y="68" width="8" height="8" fill="black"/><rect x="44" y="68" width="8" height="8" fill="white"/>
+                                <rect x="60" y="68" width="8" height="8" fill="black"/><rect x="84" y="68" width="8" height="8" fill="black"/>
+                                <rect x="108" y="68" width="8" height="8" fill="black"/><rect x="124" y="68" width="8" height="8" fill="white"/>
+                                <rect x="148" y="68" width="8" height="8" fill="black"/><rect x="164" y="68" width="8" height="8" fill="black"/>
+                                <rect x="180" y="68" width="8" height="8" fill="black"/><rect x="12" y="84" width="8" height="8" fill="white"/>
+                                <rect x="36" y="84" width="8" height="8" fill="black"/><rect x="60" y="84" width="8" height="8" fill="black"/>
+                                <rect x="84" y="84" width="8" height="8" fill="white"/><rect x="100" y="84" width="8" height="8" fill="black"/>
+                                <rect x="132" y="84" width="8" height="8" fill="black"/><rect x="148" y="84" width="8" height="8" fill="white"/>
+                                <rect x="172" y="84" width="8" height="8" fill="black"/><rect x="12" y="100" width="8" height="8" fill="black"/>
+                                <rect x="36" y="100" width="8" height="8" fill="white"/><rect x="52" y="100" width="8" height="8" fill="black"/>
+                                <rect x="76" y="100" width="8" height="8" fill="black"/><rect x="100" y="100" width="8" height="8" fill="black"/>
+                                <rect x="116" y="100" width="8" height="8" fill="white"/><rect x="140" y="100" width="8" height="8" fill="white"/>
+                                <rect x="164" y="100" width="8" height="8" fill="black"/><rect x="180" y="100" width="8" height="8" fill="black"/>
+                                <rect x="12" y="116" width="8" height="8" fill="black"/><rect x="36" y="116" width="8" height="8" fill="white"/>
+                                <rect x="60" y="116" width="8" height="8" fill="black"/><rect x="84" y="116" width="8" height="8" fill="black"/>
+                                <rect x="100" y="116" width="8" height="8" fill="white"/><rect x="132" y="116" width="8" height="8" fill="black"/>
+                                <rect x="148" y="116" width="8" height="8" fill="black"/><rect x="172" y="116" width="8" height="8" fill="black"/>
+                                <rect x="12" y="132" width="8" height="8" fill="black"/><rect x="28" y="132" width="8" height="8" fill="black"/>
+                                <rect x="44" y="132" width="8" height="8" fill="white"/><rect x="76" y="132" width="8" height="8" fill="white"/>
+                                <rect x="108" y="132" width="8" height="8" fill="black"/><rect x="124" y="132" width="8" height="8" fill="black"/>
+                                <rect x="148" y="132" width="8" height="8" fill="black"/><rect x="164" y="132" width="8" height="8" fill="white"/>
+                                <rect x="180" y="132" width="8" height="8" fill="black"/><rect x="64" y="180" width="8" height="8" fill="white"/>
+                                <rect x="80" y="180" width="8" height="8" fill="black"/><rect x="96" y="180" width="8" height="8" fill="black"/>
+                                <rect x="112" y="180" width="8" height="8" fill="white"/><rect x="128" y="180" width="8" height="8" fill="black"/>
+                                <rect x="84" y="84" width="32" height="32" fill="white" rx="4"/>
+                                <text x="100" y="103" text-anchor="middle" font-size="9" font-weight="bold" fill="#1D4ED8">QR</text>
+                                <text x="100" y="114" text-anchor="middle" font-size="7" font-weight="bold" fill="#1D4ED8">IS</text>
                             </svg>
-                            <p class="text-xs font-bold text-gray-700 mt-1">QRIS</p>
+                        </div>
+                        <p class="text-xl font-bold text-gray-800 mb-1">Rp {{ number_format($pembayaran->total_biaya, 0, ',', '.') }}</p>
+                        <p class="text-xs text-gray-500 mb-3">MEDCAMPUS KLINIK DIGITAL</p>
+                        <div class="bg-gray-50 rounded-lg px-3 py-2 text-xs text-gray-500">
+                            <p>QRIS akan ditampilkan ke pasien</p>
+                            <p>untuk scan pembayaran</p>
                         </div>
                     </div>
-                    <p class="text-sm text-gray-500">QRIS akan ditampilkan ke pasien untuk scan pembayaran.</p>
                 </div>
-                <div class="mb-4">
+                <div class="mt-4">
                     <label class="form-label">Nomor Referensi QRIS <span class="text-red-500">*</span></label>
                     <input type="text" name="nomor_referensi" class="form-input-custom w-full" value="QRIS-{{ now()->format('Ymd') }}-{{ strtoupper(substr(uniqid(), -6)) }}" placeholder="Nomor referensi">
                 </div>
@@ -150,9 +186,9 @@ function togglePanel(val) {
     if (val === 'qris') document.getElementById('panelQris').classList.remove('hidden');
     if (val === 'transfer') document.getElementById('panelTransfer').classList.remove('hidden');
     document.querySelectorAll('.metode-option').forEach(function(el) {
-        el.classList.remove('border-sky-500', 'bg-sky-50');
+        el.classList.remove('border-blue-500', 'bg-blue-50');
         if (el.dataset.value === val) {
-            el.classList.add('border-sky-500', 'bg-sky-50');
+            el.classList.add('border-blue-500', 'bg-blue-50');
         }
     });
 }

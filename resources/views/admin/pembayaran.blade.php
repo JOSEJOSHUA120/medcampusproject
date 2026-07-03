@@ -33,11 +33,13 @@
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $i+1 }}</td>
                     <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $p->rekamMedis->pasien->user->name ?? '-' }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm text-xs">
+                    <td class="px-4 py-3 border-b border-gray-100 text-sm text-xs max-w-[200px]">
                         @if($p->rekamMedis->resepObat->count())
                             @foreach($p->rekamMedis->resepObat as $ro)
                             <div>{{ $ro->obat->nama_obat ?? '-' }} x{{ $ro->jumlah }}</div>
                             @endforeach
+                        @elseif($p->rekamMedis->resep_obat)
+                            <div class="whitespace-pre-line">{{ $p->rekamMedis->resep_obat }}</div>
                         @else
                             -
                         @endif
@@ -49,7 +51,7 @@
                     <td class="px-4 py-3 border-b border-gray-100 text-sm"><span class="badge-status badge-{{ $p->status_bayar }}">{{ $p->status_bayar == 'lunas' ? 'Lunas' : 'Belum Bayar' }}</span></td>
                     <td class="px-4 py-3 border-b border-gray-100 text-sm flex gap-1 flex-wrap">
                         @if($p->status_bayar == 'belum_bayar')
-                        <button onclick="openBayar({{ $p->id }}, {{ $p->total_biaya }})" class="btn-sm btn-success">Bayar</button>
+                        <button onclick="openBayar({{ $p->id }}, {{ $p->total_biaya }}, '{{ $p->rekamMedis->resep_obat ? addslashes(str_replace(["\r\n", "\r", "\n"], '\\n', $p->rekamMedis->resep_obat)) : '' }}')" class="btn-sm btn-success">Bayar</button>
                         <a href="{{ route('admin.pembayaran.generate', $p->id) }}" class="btn-sm btn-info" style="background:#06b6d4;color:#fff;">Generate</a>
                         @endif
                         <a href="{{ route('admin.pembayaran.edit', $p->id) }}" class="btn-sm btn-warning">Edit</a>
@@ -76,6 +78,10 @@
             <div class="mb-4 p-4 bg-gray-50 rounded-xl">
                 <p class="text-sm text-gray-500">Total Tagihan</p>
                 <p id="totalTagihan" class="text-2xl font-bold text-gray-800">Rp 0</p>
+                <div id="resepInfo" class="mt-2 text-xs text-gray-500 border-t border-gray-200 pt-2 hidden">
+                    <p class="font-medium text-gray-700 mb-1">Resep Dokter:</p>
+                    <p id="resepText" class="whitespace-pre-line"></p>
+                </div>
             </div>
             <div class="mb-4">
                 <label class="form-label">Jumlah Bayar <span class="text-red-500">*</span></label>
@@ -105,10 +111,16 @@
 
 @push('scripts')
 <script>
-function openBayar(id, total) {
+function openBayar(id, total, resep) {
     document.getElementById('formBayar').action = "{{ url('admin/pembayaran') }}/" + id + "/bayar";
     document.getElementById('totalTagihan').textContent = 'Rp ' + total.toLocaleString('id-ID');
     document.getElementById('jumlahBayar').value = total;
+    if (resep) {
+        document.getElementById('resepInfo').classList.remove('hidden');
+        document.getElementById('resepText').textContent = resep;
+    } else {
+        document.getElementById('resepInfo').classList.add('hidden');
+    }
     document.getElementById('modalBayar').classList.remove('hidden');
     document.getElementById('modalBayar').classList.add('flex');
 }

@@ -17,12 +17,13 @@
                 <select name="rekam_medis_id" class="form-select-custom @error('rekam_medis_id') border-red-500 @enderror" required>
                     <option value="">-- Pilih --</option>
                     @foreach($rekamMedisList as $rm)
-                    <option value="{{ $rm->id }}" @selected(old('rekam_medis_id', $pembayaran->rekam_medis_id ?? '')==$rm->id)>
+                    <option value="{{ $rm->id }}" data-resep="{{ $rm->resep_obat ? str_replace(["\r\n", "\r", "\n"], '\\n', $rm->resep_obat) : '' }}" @selected(old('rekam_medis_id', $pembayaran->rekam_medis_id ?? '')==$rm->id)>
                         {{ $rm->pasien->user->name ?? '-' }} - {{ $rm->created_at->format('Y-m-d') }}
                         @if($rm->resepObat->count()) ({{ $rm->resepObat->count() }} obat) @endif
                     </option>
                     @endforeach
                 </select>
+                <div id="resepPreview" class="mt-2 p-3 bg-gray-50 rounded-lg text-xs text-gray-600 hidden whitespace-pre-line"></div>
                 @error('rekam_medis_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
             <div>
@@ -65,4 +66,31 @@
         </div>
     </form>
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const select = document.querySelector('select[name="rekam_medis_id"]');
+    const preview = document.getElementById('resepPreview');
+    select.addEventListener('change', function() {
+        const opt = this.options[this.selectedIndex];
+        const resep = opt ? opt.dataset.resep : '';
+        if (resep) {
+            preview.textContent = 'Resep Dokter:\n' + resep.replace(/\\n/g, '\n');
+            preview.classList.remove('hidden');
+        } else {
+            preview.classList.add('hidden');
+        }
+    });
+    if (select.selectedIndex > 0) {
+        const opt = select.options[select.selectedIndex];
+        const resep = opt ? opt.dataset.resep : '';
+        if (resep) {
+            preview.textContent = 'Resep Dokter:\n' + resep.replace(/\\n/g, '\n');
+            preview.classList.remove('hidden');
+        }
+    }
+});
+</script>
+@endpush
 @endsection
