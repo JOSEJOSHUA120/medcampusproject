@@ -9,22 +9,26 @@
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+    <h5 class="font-bold text-gray-800 mb-5">
+        <svg class="w-5 h-5 inline text-blue-600 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+        Tambah Jadwal Baru
+    </h5>
     <form action="{{ route('admin.jadwal-dokter.store') }}" method="POST">
         @csrf
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <div>
                 <label class="form-label">Dokter <span class="text-red-500">*</span></label>
-                <select name="user_id" class="form-select-custom" required>
-                    <option value="">-- Pilih --</option>
+                <select name="user_id" class="form-input-custom" required>
+                    <option value="">-- Pilih Dokter --</option>
                     @foreach($dokters as $d)
-                    <option value="{{ $d->id }}">dr. {{ $d->dokter->nama_dokter ?? $d->name }}</option>
+                    <option value="{{ $d->id }}">{{ $d->dokter->nama_dokter ?? $d->name }}</option>
                     @endforeach
                 </select>
             </div>
             <div>
                 <label class="form-label">Hari <span class="text-red-500">*</span></label>
-                <select name="hari" class="form-select-custom" required>
-                    <option value="">-- Pilih --</option>
+                <select name="hari" class="form-input-custom" required>
+                    <option value="">-- Pilih Hari --</option>
                     @foreach(['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'] as $hari)
                     <option value="{{ $hari }}">{{ $hari }}</option>
                     @endforeach
@@ -47,15 +51,22 @@
                 <input type="number" name="kuota" class="form-input-custom" value="10" min="0" required>
             </div>
         </div>
-        <button type="submit" class="btn-primary mt-4">Tambah Jadwal</button>
+        <button type="submit" class="btn-primary mt-5">
+            <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+            Tambah Jadwal
+        </button>
     </form>
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+    <h5 class="font-bold text-gray-800 mb-4">
+        <svg class="w-5 h-5 inline text-blue-600 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        Daftar Jadwal
+    </h5>
     <div class="overflow-x-auto">
-        <table id="dataTable" class="w-full text-left">
-            <thead class="bg-gray-50">
-                <tr>
+        <table class="w-full text-left">
+            <thead>
+                <tr class="bg-gray-50 border-b border-gray-100">
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">No</th>
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Dokter</th>
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Hari</th>
@@ -66,24 +77,50 @@
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-gray-50">
                 @foreach($data as $i => $j)
-                <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $i + 1 }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm font-medium">dr. {{ $j->dokter->dokter->nama_dokter ?? $j->dokter->name }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $j->hari }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ substr($j->jam_mulai, 0, 5) }} - {{ substr($j->jam_selesai, 0, 5) }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $j->durasi_slot }} menit</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $j->kuota }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">
-                        <span class="badge-status {{ $j->status == 'aktif' ? 'badge-selesai' : 'bg-red-100 text-red-800' }}">{{ ucfirst($j->status) }}</span>
+                <tr class="hover:bg-gray-50/50 transition">
+                    <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ $i + 1 }}</td>
+                    <td class="px-4 py-3 text-sm">
+                        <div class="flex items-center gap-2.5">
+                            <img src="{{ $j->dokter->foto ?? 'https://i.pravatar.cc/300?u=' . urlencode($j->dokter->email ?? '') }}" alt="foto" class="w-8 h-8 rounded-full object-cover border border-gray-200">
+                            <span class="font-medium text-gray-800">{{ $j->dokter->dokter->nama_dokter ?? $j->dokter->name }}</span>
+                        </div>
                     </td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">
-                        <div class="flex gap-1">
-                            <a href="{{ route('admin.jadwal-dokter.edit', $j->id) }}" class="btn-sm btn-primary">Edit</a>
-                            <form action="{{ route('admin.jadwal-dokter.destroy', $j->id) }}" method="POST" class="inline" onsubmit="return confirm('Hapus jadwal ini?')">
+                    <td class="px-4 py-3 text-sm">
+                        <div class="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded-md">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            {{ $j->hari }}
+                        </div>
+                    </td>
+                    <td class="px-4 py-3 text-sm font-medium text-gray-700">{{ substr($j->jam_mulai, 0, 5) }} - {{ substr($j->jam_selesai, 0, 5) }}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">{{ $j->durasi_slot }} menit</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">{{ $j->kuota }} pasien</td>
+                    <td class="px-4 py-3 text-sm">
+                        @if($j->status == 'aktif')
+                        <span class="inline-flex items-center gap-1 bg-green-50 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+                            <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                            Aktif
+                        </span>
+                        @else
+                        <span class="inline-flex items-center gap-1 bg-gray-100 text-gray-500 text-xs font-semibold px-2.5 py-1 rounded-full">
+                            <span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
+                            Nonaktif
+                        </span>
+                        @endif
+                    </td>
+                    <td class="px-4 py-3 text-sm">
+                        <div class="flex items-center gap-1.5">
+                            <a href="{{ route('admin.jadwal-dokter.edit', $j->id) }}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary-50 text-primary-700 text-xs font-semibold hover:bg-primary-100 transition">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                Edit
+                            </a>
+                            <form action="{{ route('admin.jadwal-dokter.destroy', $j->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus jadwal ini?')" class="inline">
                                 @csrf @method('DELETE')
-                                <button class="btn-sm btn-danger">Hapus</button>
+                                <button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-semibold hover:bg-red-100 transition">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                    Hapus
+                                </button>
                             </form>
                         </div>
                     </td>
@@ -91,14 +128,12 @@
                 @endforeach
             </tbody>
         </table>
+        @if($data->isEmpty())
+        <div class="text-center py-12">
+            <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <p class="text-gray-400 text-sm">Belum ada jadwal dokter.</p>
+        </div>
+        @endif
     </div>
 </div>
-
-@push('scripts')
-<script>
-$(document).ready(function() {
-    $('#dataTable').DataTable();
-});
-</script>
-@endpush
 @endsection

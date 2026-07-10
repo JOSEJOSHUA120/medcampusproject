@@ -20,25 +20,34 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        $totalPasien = Pasien::count();
-        $pasienHariIni = Antrian::whereDate('tanggal_antrian', today())->count();
-        $totalDokter = Dokter::count();
-        $totalObat = Obat::count();
-        $antrianHariIni = Antrian::whereDate('tanggal_antrian', today())->count();
-        $pendapatanBulanIni = Pembayaran::where('status_bayar', 'lunas')->whereMonth('tanggal_bayar', now()->month)->sum('total_biaya');
+        $bookingHariIni = Booking::whereDate('tanggal_booking', today())
+            ->whereNotIn('status', ['dibatalkan', 'ditolak', 'tidak_hadir'])
+            ->count();
 
-        $dataAntrian = Antrian::whereDate('tanggal_antrian', today())
-            ->with(['pasien.user', 'dokter.user'])
-            ->orderBy('nomor_antrian')
+        $pasienBulanIni = Antrian::whereMonth('tanggal_antrian', now()->month)
+            ->whereYear('tanggal_antrian', now()->year)
+            ->distinct('pasien_id')
+            ->count('pasien_id');
+
+        $pendapatanBulanIni = Pembayaran::where('status_bayar', 'lunas')
+            ->whereMonth('tanggal_bayar', now()->month)
+            ->whereYear('tanggal_bayar', now()->year)
+            ->sum('total_biaya');
+
+        $dataBooking = Booking::whereDate('tanggal_booking', today())
+            ->with('pasien', 'dokter', 'jadwalDokter')
+            ->orderBy('jam_booking')
             ->get();
 
-        $totalBooking = Booking::count();
-        $bookingMenunggu = Booking::where('status', 'menunggu')->count();
-        $bookingHariIni = Booking::whereDate('tanggal_booking', today())->count();
+        $pembayaranTerbaru = Pembayaran::with('rekamMedis.pasien.user')
+            ->where('status_bayar', 'belum_bayar')
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
 
         return view('admin.dashboard', compact(
-            'totalPasien', 'pasienHariIni', 'totalDokter', 'totalObat', 'antrianHariIni', 'pendapatanBulanIni', 'dataAntrian',
-            'totalBooking', 'bookingMenunggu', 'bookingHariIni'
+            'bookingHariIni', 'pasienBulanIni', 'pendapatanBulanIni',
+            'dataBooking', 'pembayaranTerbaru'
         ));
     }
 
@@ -248,8 +257,6 @@ class AdminController extends Controller
             'metode_bayar' => 'nullable',
             'tanggal_bayar' => 'nullable|date',
             'status_bayar' => 'required|in:belum_bayar,lunas',
-            'bank' => 'nullable|string|max:50',
-            'nomor_referensi' => 'nullable|string|max:100',
         ]);
         Pembayaran::create($request->all());
         return redirect()->route('admin.pembayaran')->with('success', 'Pembayaran berhasil ditambahkan.');
@@ -271,8 +278,6 @@ class AdminController extends Controller
             'metode_bayar' => 'nullable',
             'tanggal_bayar' => 'nullable|date',
             'status_bayar' => 'required|in:belum_bayar,lunas',
-            'bank' => 'nullable|string|max:50',
-            'nomor_referensi' => 'nullable|string|max:100',
         ]);
         $pembayaran->update($request->all());
         return redirect()->route('admin.pembayaran')->with('success', 'Pembayaran berhasil diupdate.');
@@ -288,10 +293,8 @@ class AdminController extends Controller
     {
         $pembayaran = Pembayaran::findOrFail($id);
         $request->validate([
-            'metode_bayar' => 'required|in:tunai,qris,transfer',
-            'jumlah_bayar' => 'required|numeric|min:0',
-            'nomor_referensi' => 'nullable|string|max:100',
-            'bank' => 'nullable|string|max:50',
+            'metode_bayar' => 'required|in:tunai,qris',
+            'jumlah_bayar' => 'required|numeric|min:1',
         ]);
 
         if ($request->jumlah_bayar < $pembayaran->total_biaya) {
@@ -302,35 +305,10 @@ class AdminController extends Controller
             'status_bayar' => 'lunas',
             'tanggal_bayar' => now()->toDateString(),
             'metode_bayar' => $request->metode_bayar,
-            'nomor_referensi' => $request->nomor_referensi,
-            'bank' => $request->bank,
+            'total_biaya' => $request->jumlah_bayar,
         ]);
 
         return redirect()->route('admin.pembayaran')->with('success', 'Pembayaran berhasil diverifikasi dan dicatat.');
-    }
-
-    public function pembayaranGenerate($id)
-    {
-        $pembayaran = Pembayaran::with('rekamMedis.pasien.user', 'rekamMedis.resepObat.obat')->findOrFail($id);
-        return view('admin.pembayaran-generate', compact('pembayaran'));
-    }
-
-    public function pembayaranGenerateStore(Request $request, $id)
-    {
-        $pembayaran = Pembayaran::findOrFail($id);
-        $request->validate([
-            'metode_bayar' => 'required|in:qris,transfer',
-            'bank' => 'nullable|string|max:50',
-            'nomor_referensi' => 'required|string|max:100',
-        ]);
-
-        $pembayaran->update([
-            'metode_bayar' => $request->metode_bayar,
-            'bank' => $request->bank,
-            'nomor_referensi' => $request->nomor_referensi,
-        ]);
-
-        return redirect()->route('admin.pembayaran')->with('success', 'Pembayaran berhasil digenerate dengan metode ' . strtoupper($request->metode_bayar) . '.');
     }
 
     public function laporan(Request $request)
@@ -406,49 +384,5 @@ class AdminController extends Controller
         }
 
         return redirect()->back()->with('success', 'Status antrian berhasil diupdate.');
-    }
-
-    public function rooms()
-    {
-        $data = Room::orderBy('room_number')->get();
-        return view('admin.rooms', compact('data'));
-    }
-
-    public function roomsCreate()
-    {
-        return view('admin.rooms-form');
-    }
-
-    public function roomsStore(Request $request)
-    {
-        $request->validate([
-            'room_number' => 'required|unique:rooms,room_number',
-            'description' => 'nullable',
-        ]);
-        Room::create($request->only(['room_number', 'description']));
-        return redirect()->route('admin.rooms')->with('success', 'Ruangan berhasil ditambahkan.');
-    }
-
-    public function roomsEdit($id)
-    {
-        $room = Room::findOrFail($id);
-        return view('admin.rooms-form', compact('room'));
-    }
-
-    public function roomsUpdate(Request $request, $id)
-    {
-        $room = Room::findOrFail($id);
-        $request->validate([
-            'room_number' => 'required|unique:rooms,room_number,' . $id,
-            'description' => 'nullable',
-        ]);
-        $room->update($request->only(['room_number', 'description']));
-        return redirect()->route('admin.rooms')->with('success', 'Ruangan berhasil diupdate.');
-    }
-
-    public function roomsDestroy($id)
-    {
-        Room::findOrFail($id)->delete();
-        return redirect()->route('admin.rooms')->with('success', 'Ruangan berhasil dihapus.');
     }
 }

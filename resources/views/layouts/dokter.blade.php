@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 </head>
 <body class="font-sans bg-gray-50">
     <div class="flex h-screen overflow-hidden">
@@ -30,18 +31,11 @@
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         Daftar Booking
                     </a>
-                    <a href="{{ route('dokter.semua-booking') }}" class="sidebar-link {{ request()->routeIs('dokter.semua-booking*') ? 'active' : '' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                        Booking & Antrian
-                    </a>
-                    <a href="{{ route('dokter.antrian') }}" class="sidebar-link {{ request()->routeIs('dokter.antrian*') ? 'active' : '' }}">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-                        Kelola Pasien
-                    </a>
                     <a href="{{ route('dokter.rekam-medis') }}" class="sidebar-link {{ request()->routeIs('dokter.rekam-medis*') ? 'active' : '' }}">
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         Rekam Medis
                     </a>
+
                     <a href="{{ route('dokter.riwayat-pasien') }}" class="sidebar-link {{ request()->routeIs('dokter.riwayat-pasien*') ? 'active' : '' }}">
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         Riwayat Pasien
@@ -72,10 +66,38 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </button>
                 <div class="flex items-center gap-3">
-                    <a href="{{ route('profile.edit') }}" class="text-sm text-gray-500 hidden sm:block hover:text-primary-600 transition">{{ Auth::user()->name }}</a>
-                    <a href="{{ route('profile.edit') }}" class="w-8 h-8 rounded-full overflow-hidden border-2 border-primary-200 hover:border-primary-400 transition">
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="relative p-2 rounded-lg hover:bg-gray-100 transition">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                            @php $unread = Auth::user()->unreadNotifications->count(); @endphp
+                            @if($unread > 0)
+                            <span class="absolute -top-0.5 -right-0.5 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">{{ $unread > 9 ? '9+' : $unread }}</span>
+                            @endif
+                        </button>
+                        <div x-show="open" @click.outside="open = false" class="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-200 z-50 max-h-96 overflow-y-auto" style="display: none;">
+                            <div class="p-3 border-b border-gray-100">
+                                <h6 class="font-bold text-gray-800 text-sm">Notifikasi</h6>
+                            </div>
+                            @forelse(Auth::user()->notifications->take(10) as $notif)
+                            <a href="{{ route('notifications.read', $notif->id) }}" class="block px-4 py-3 hover:bg-gray-50 border-b border-gray-50 {{ is_null($notif->read_at) ? 'bg-primary-50/50' : '' }}">
+                                <p class="text-sm text-gray-800">{{ $notif->data['message'] ?? 'Pesan baru' }}</p>
+                                <p class="text-xs text-gray-400 mt-1">{{ $notif->created_at->diffForHumans() }}</p>
+                            </a>
+                            @empty
+                            <p class="text-sm text-gray-400 text-center py-6">Belum ada notifikasi</p>
+                            @endforelse
+                            @if(Auth::user()->notifications->count() > 0)
+                            <form action="{{ route('notifications.read-all') }}" method="POST" class="p-2">
+                                @csrf
+                                <button class="w-full text-center text-xs text-primary-600 font-semibold py-2 hover:bg-primary-50 rounded-lg">Tandai semua telah dibaca</button>
+                            </form>
+                            @endif
+                        </div>
+                    </div>
+                    <span class="text-sm text-gray-500 hidden sm:block">{{ Auth::user()->name }}</span>
+                    <span class="w-8 h-8 rounded-full overflow-hidden border-2 border-primary-200 inline-block">
                         <img src="{{ Auth::user()->dokter->foto ?? (Auth::user()->foto ?? 'https://i.pravatar.cc/300?u=' . urlencode(Auth::user()->email)) }}" alt="foto" class="w-full h-full object-cover">
-                    </a>
+                    </span>
                 </div>
             </header>
 
@@ -96,6 +118,9 @@
             </main>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @stack('scripts')
 </body>
 </html>

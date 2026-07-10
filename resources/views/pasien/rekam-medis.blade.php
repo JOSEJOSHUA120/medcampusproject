@@ -26,7 +26,7 @@
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3 text-sm text-gray-500">{{ $i + 1 }}</td>
                     <td class="px-4 py-3 text-sm">{{ $r->created_at->format('Y-m-d H:i') }}</td>
-                    <td class="px-4 py-3 text-sm">dr. {{ $r->dokter->user->name ?? '-' }}</td>
+                    <td class="px-4 py-3 text-sm">{{ $r->dokter->user->name ?? '-' }}</td>
                     <td class="px-4 py-3 text-sm">{{ \Str::limit($r->diagnosa, 50) }}</td>
                     <td class="px-4 py-3 text-sm text-xs">
                         @if($r->resepObat->count())

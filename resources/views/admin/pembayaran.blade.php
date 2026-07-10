@@ -5,7 +5,7 @@
 @section('content')
 <div class="page-header">
     <h4>Data Pembayaran</h4>
-    <p>Kelola data pembayaran pasien. Generate QRIS/Transfer, verifikasi pembayaran.</p>
+    <p>Kelola data pembayaran pasien. Verifikasi pembayaran QRIS & Tunai.</p>
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
@@ -22,7 +22,6 @@
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Obat</th>
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Total Biaya</th>
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Metode</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Referensi</th>
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal Bayar</th>
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
                     <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
@@ -46,13 +45,11 @@
                     </td>
                     <td class="px-4 py-3 border-b border-gray-100 text-sm">Rp {{ number_format($p->total_biaya, 0, ',', '.') }}</td>
                     <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $p->metode_bayar ?? '-' }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm text-xs">{{ $p->nomor_referensi ? $p->bank.' - '.$p->nomor_referensi : '-' }}</td>
                     <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $p->tanggal_bayar ? \Carbon\Carbon::parse($p->tanggal_bayar)->format('Y-m-d') : '-' }}</td>
                     <td class="px-4 py-3 border-b border-gray-100 text-sm"><span class="badge-status badge-{{ $p->status_bayar }}">{{ $p->status_bayar == 'lunas' ? 'Lunas' : 'Belum Bayar' }}</span></td>
                     <td class="px-4 py-3 border-b border-gray-100 text-sm flex gap-1 flex-wrap">
                         @if($p->status_bayar == 'belum_bayar')
                         <button onclick="openBayar({{ $p->id }}, {{ $p->total_biaya }}, '{{ $p->rekamMedis->resep_obat ? addslashes(str_replace(["\r\n", "\r", "\n"], '\\n', $p->rekamMedis->resep_obat)) : '' }}')" class="btn-sm btn-success">Bayar</button>
-                        <a href="{{ route('admin.pembayaran.generate', $p->id) }}" class="btn-sm btn-info" style="background:#06b6d4;color:#fff;">Generate</a>
                         @endif
                         <a href="{{ route('admin.pembayaran.edit', $p->id) }}" class="btn-sm btn-warning">Edit</a>
                         <form action="{{ route('admin.pembayaran.destroy', $p->id) }}" method="POST" onsubmit="return confirm('Hapus pembayaran ini?')">
@@ -89,20 +86,17 @@
             </div>
             <div class="mb-4">
                 <label class="form-label">Metode Bayar <span class="text-red-500">*</span></label>
-                <select name="metode_bayar" class="form-select-custom w-full" required>
+                <select name="metode_bayar" class="form-select-custom w-full" required onchange="toggleMetodeAdmin(this.value)">
                     <option value="">-- Pilih --</option>
                     <option value="tunai">Tunai</option>
                     <option value="qris">QRIS</option>
-                    <option value="transfer">Transfer Bank</option>
                 </select>
             </div>
-            <div class="mb-4">
-                <label class="form-label">Bank</label>
-                <input type="text" name="bank" class="form-input-custom w-full" placeholder="Nama bank (jika transfer)">
-            </div>
-            <div class="mb-4">
-                <label class="form-label">Nomor Referensi</label>
-                <input type="text" name="nomor_referensi" class="form-input-custom w-full" placeholder="Nomor referensi pembayaran">
+            <div id="panelQrisAdmin" class="mb-4 hidden">
+                <div class="bg-gray-50 rounded-xl p-4 text-center">
+                    <img src="{{ asset('qris medcampus.png') }}" alt="QRIS MEDCAMPUS" class="w-40 h-40 mx-auto object-contain">
+                    <p class="text-xs text-gray-500 mt-3">Scan QRIS untuk verifikasi pembayaran</p>
+                </div>
             </div>
             <button type="submit" class="btn-primary w-full py-3 text-base font-bold">Verifikasi & Konfirmasi</button>
         </form>
@@ -127,6 +121,10 @@ function openBayar(id, total, resep) {
 function closeModal() {
     document.getElementById('modalBayar').classList.add('hidden');
     document.getElementById('modalBayar').classList.remove('flex');
+}
+function toggleMetodeAdmin(val) {
+    document.getElementById('panelQrisAdmin').classList.add('hidden');
+    if (val === 'qris') document.getElementById('panelQrisAdmin').classList.remove('hidden');
 }
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('modalBayar').addEventListener('click', function(e) {

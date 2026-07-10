@@ -39,7 +39,7 @@ class JadwalDokter extends Model
         $selesai = \Carbon\Carbon::parse($this->jam_selesai);
         $existingBookings = $this->bookings()
             ->where('tanggal_booking', $tanggal)
-            ->whereNotIn('status', ['dibatalkan','ditolak'])
+            ->whereNotIn('status', ['dibatalkan','ditolak','kadaluarsa'])
             ->pluck('jam_booking')
             ->map(fn($t) => \Carbon\Carbon::parse($t)->format('H:i'))
             ->toArray();

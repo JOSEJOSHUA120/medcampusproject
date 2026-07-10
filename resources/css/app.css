@@ -117,6 +117,43 @@
     .alert-info {
         @apply bg-blue-50 border border-blue-200 text-blue-700 rounded-xl px-4 py-3 text-sm;
     }
+    .dataTables_wrapper .dataTables_paginate {
+        @apply flex items-center gap-1;
+    }
+    .dataTables_wrapper .dataTables_paginate {
+        @apply flex items-center gap-2;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        @apply px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-700 text-sm font-medium hover:bg-gray-100 hover:border-gray-400 transition-all duration-150 cursor-pointer select-none;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        @apply bg-primary-600 border-primary-600 text-white hover:bg-primary-700;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        @apply opacity-40 cursor-not-allowed hover:bg-white hover:border-gray-300;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.previous {
+        @apply mr-2 font-bold text-lg leading-none px-3;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.next {
+        @apply ml-2 font-bold text-lg leading-none px-3;
+    }
+    .dataTables_wrapper .dataTables_length {
+        @apply text-sm text-gray-600 flex items-center gap-1;
+    }
+    .dataTables_wrapper .dataTables_length label {
+        @apply flex items-center gap-1;
+    }
+    .dataTables_wrapper .dataTables_length select {
+        @apply mx-1 px-3 py-1.5 pr-8 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 appearance-none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        background-size: 14px;
+    }
+    .dataTables_wrapper .dataTables_info {
+        @apply text-sm text-gray-500;
+    }
 }
 
 @layer utilities {

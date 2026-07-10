@@ -27,7 +27,7 @@
     <h2>REKAM MEDIS</h2>
     <table class="info-table">
         <tr><td>Pasien:</td><td>{{ $rm->pasien->user->name ?? '-' }}</td></tr>
-        <tr><td>Dokter:</td><td>dr. {{ $rm->dokter->user->name ?? '-' }}</td></tr>
+        <tr><td>Dokter:</td><td>{{ $rm->dokter->user->name ?? '-' }}</td></tr>
         <tr><td>Tanggal:</td><td>{{ $rm->created_at->format('Y-m-d H:i') }}</td></tr>
         <tr><td>No. Antrian:</td><td>{{ $rm->antrian->nomor_antrian ?? '-' }}</td></tr>
     </table>
@@ -87,7 +87,7 @@
 
     <div class="stamp">
         <p>Hormat Kami,</p>
-        <div class="ttd">dr. {{ $rm->dokter->user->name ?? '.........' }}</div>
+        <div class="ttd">{{ $rm->dokter->user->name ?? '.........' }}</div>
     </div>
 
     <p class="footer">Dicetak: {{ now()->format('Y-m-d H:i') }}</p>

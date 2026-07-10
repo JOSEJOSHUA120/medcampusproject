@@ -16,7 +16,7 @@ return new class extends Migration
             $table->date('tanggal_booking');
             $table->time('jam_booking');
             $table->text('keluhan_awal')->nullable();
-            $table->enum('status', ['menunggu','disetujui','ditolak','check_in','tidak_hadir','selesai','dibatalkan'])->default('menunggu');
+            $table->string('status', 20)->default('menunggu');
             $table->text('catatan_dokter')->nullable();
             $table->timestamps();
         });

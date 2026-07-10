@@ -8,19 +8,19 @@
     <p>Selamat datang, {{ auth()->user()->name }}!</p>
 </div>
 
-@if($antrianSekarang)
-<div class="card-dashboard p-6 text-center mb-6">
-    <h5 class="font-bold text-gray-800 mb-2">Status Antrian Anda</h5>
-    <div class="text-5xl font-bold text-primary-600 my-4">{{ $antrianSekarang->nomor_antrian }}</div>
-    <div class="mb-3">
-        <span class="badge-status badge-{{ $antrianSekarang->status }} text-sm">{{ ucfirst($antrianSekarang->status) }}</span>
+@if($bookingKadaluarsa->count())
+<div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 flex items-start gap-3">
+    <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <div class="text-sm text-red-800">
+        <p class="font-semibold mb-1">Jadwal booking Anda telah berakhir.</p>
+        @foreach($bookingKadaluarsa as $bk)
+        <p>Booking dengan dr. {{ $bk->dokter->name }} pada {{ \Carbon\Carbon::parse($bk->tanggal_booking)->format('d/m/Y') }} jam {{ \Carbon\Carbon::parse($bk->jam_booking)->format('H:i') }} telah kadaluarsa.</p>
+        @endforeach
+        <a href="{{ route('pasien.booking') }}" class="inline-block mt-2 text-red-700 underline font-medium">Silakan lakukan booking ulang untuk membuat janji baru.</a>
     </div>
-    <p class="text-gray-400 text-sm">Dokter: {{ $antrianSekarang->dokter->user->name ?? '-' }}</p>
-</div>
-@else
-<div class="card-dashboard p-6 text-center mb-6">
-    <h5 class="font-bold text-gray-800 mb-3">Belum Ada Antrian Aktif</h5>
-    <a href="{{ route('pasien.ambil-antrian') }}" class="btn-primary">Ambil Antrian Sekarang</a>
+    <button onclick="this.closest('div').remove()" class="text-red-400 hover:text-red-600 flex-shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
 </div>
 @endif
 
@@ -53,10 +53,5 @@
     @else
     <p class="text-gray-400 text-sm">Belum ada pembayaran.</p>
     @endif
-</div>
-
-<div class="flex gap-3 mt-6">
-    <a href="{{ route('pasien.ambil-antrian') }}" class="btn-primary">Ambil Antrian</a>
-    <a href="{{ route('pasien.jadwal-saya') }}" class="btn-secondary">Jadwal Saya</a>
 </div>
 @endsection

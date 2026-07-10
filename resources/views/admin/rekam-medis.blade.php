@@ -5,10 +5,14 @@
 @section('content')
 <div class="page-header">
     <h4>Rekam Medis</h4>
-    <p>Lihat data rekam medis pasien (read-only).</p>
+    <p>Data rekam medis pasien yang telah ditulis oleh dokter. <span class="badge-status bg-gray-100 text-gray-600 text-xs">Read Only</span></p>
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+    <div class="flex items-center gap-2 mb-4">
+        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <h5 class="font-bold text-gray-800">Riwayat Rekam Medis</h5>
+    </div>
     <div class="overflow-x-auto">
         <table id="dataTable" class="w-full text-left">
             <thead class="bg-gray-50">
@@ -26,20 +30,25 @@
                 @foreach($data as $i => $r)
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $i+1 }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $r->pasien->user->name ?? '-' }}</td>
+                    <td class="px-4 py-3 border-b border-gray-100 text-sm">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                            {{ $r->pasien->user->name ?? '-' }}
+                        </div>
+                    </td>
                     <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $r->dokter->user->name ?? '-' }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ \Str::limit($r->diagnosa, 50) }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ \Str::limit($r->tindakan, 50) }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm text-xs">
+                    <td class="px-4 py-3 border-b border-gray-100 text-sm max-w-[200px]">{{ \Str::limit($r->diagnosa, 50) }}</td>
+                    <td class="px-4 py-3 border-b border-gray-100 text-sm max-w-[200px]">{{ \Str::limit($r->tindakan, 50) }}</td>
+                    <td class="px-4 py-3 border-b border-gray-100 text-sm text-xs max-w-[200px]">
                         @if($r->resepObat->count())
                             @foreach($r->resepObat as $ro)
-                            <div>{{ $ro->obat->nama_obat ?? '-' }} x{{ $ro->jumlah }} @ Rp {{ number_format($ro->harga_satuan, 0, ',', '.') }}</div>
+                            <div class="truncate">{{ $ro->obat->nama_obat ?? '-' }} x{{ $ro->jumlah }}</div>
                             @endforeach
                         @else
                             {{ \Str::limit($r->resep_obat, 50) ?: '-' }}
                         @endif
                     </td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $r->created_at->format('Y-m-d H:i') }}</td>
+                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $r->created_at->format('d/m/Y H:i') }}</td>
                 </tr>
                 @endforeach
             </tbody>

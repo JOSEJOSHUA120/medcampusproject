@@ -36,21 +36,12 @@
                 <select name="metode_bayar" class="form-select-custom">
                     <option value="">-- Pilih --</option>
                     <option value="Tunai" @selected(old('metode_bayar', $pembayaran->metode_bayar ?? '')=='Tunai')>Tunai</option>
-                    <option value="Transfer" @selected(old('metode_bayar', $pembayaran->metode_bayar ?? '')=='Transfer')>Transfer</option>
                     <option value="QRIS" @selected(old('metode_bayar', $pembayaran->metode_bayar ?? '')=='QRIS')>QRIS</option>
                 </select>
             </div>
             <div>
                 <label class="form-label">Tanggal Bayar</label>
                 <input type="date" name="tanggal_bayar" class="form-input-custom" value="{{ old('tanggal_bayar', $pembayaran->tanggal_bayar ?? '') }}">
-            </div>
-            <div>
-                <label class="form-label">Bank</label>
-                <input type="text" name="bank" class="form-input-custom" value="{{ old('bank', $pembayaran->bank ?? '') }}" placeholder="Nama bank">
-            </div>
-            <div>
-                <label class="form-label">Nomor Referensi</label>
-                <input type="text" name="nomor_referensi" class="form-input-custom" value="{{ old('nomor_referensi', $pembayaran->nomor_referensi ?? '') }}" placeholder="Nomor referensi">
             </div>
             <div>
                 <label class="form-label">Status Bayar <span class="text-red-500">*</span></label>

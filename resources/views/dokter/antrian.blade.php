@@ -35,7 +35,11 @@
                     <td class="px-4 py-3 text-sm"><span class="badge-status badge-{{ $a->status }}">{{ ucfirst($a->status) }}</span></td>
                     <td class="px-4 py-3 text-sm space-x-1">
                         @if(in_array($a->status, ['selesai', 'dibatalkan']))
+                            @if(!$a->rekamMedis)
+                            <a href="{{ route('dokter.rekam-medis.create', $a->id) }}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold rounded-lg shadow-sm transition">Isi Rekam Medis</a>
+                            @else
                             <span class="text-gray-400 text-xs">-</span>
+                            @endif
                         @else
                             @if($a->status == 'dipanggil')
                             <form action="{{ route('dokter.antrian.mulai-periksa', $a->id) }}" method="POST" class="inline">
@@ -49,8 +53,8 @@
                                 <button class="btn-warning btn-sm">Panggil</button>
                             </form>
                             @endif
-                            @if($a->status == 'sedang_dilayani')
-                            <a href="{{ route('dokter.rekam-medis.create', $a->id) }}" class="btn-success btn-sm">Buat Rekam Medis</a>
+                            @if(!$a->rekamMedis)
+                            <a href="{{ route('dokter.rekam-medis.create', $a->id) }}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold rounded-lg shadow-sm transition">Isi Rekam Medis</a>
                             @endif
                             <a href="{{ route('dokter.antrian.download', $a->id) }}" class="btn-secondary btn-sm">Download</a>
                         @endif

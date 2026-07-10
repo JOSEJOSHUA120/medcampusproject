@@ -79,7 +79,7 @@
                 @foreach($data as $i => $b)
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $i + 1 }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm font-medium">dr. {{ $b->dokter->name }}</td>
+                    <td class="px-4 py-3 border-b border-gray-100 text-sm font-medium">{{ $b->dokter->name }}</td>
                     <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ \Carbon\Carbon::parse($b->tanggal_booking)->format('d/m/Y') }}</td>
                     <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ \Carbon\Carbon::parse($b->jam_booking)->format('H:i') }}</td>
                     <td class="px-4 py-3 border-b border-gray-100 text-sm max-w-[150px] truncate" title="{{ $b->keluhan_awal }}">{{ $b->keluhan_awal ?? '-' }}</td>
@@ -93,6 +93,7 @@
                                 'tidak_hadir' => 'bg-gray-100 text-gray-800',
                                 'selesai' => 'badge-selesai',
                                 'dibatalkan' => 'bg-red-100 text-red-800',
+                                'kadaluarsa' => 'bg-orange-100 text-orange-800',
                                 default => 'bg-gray-100 text-gray-800',
                             };
                         @endphp

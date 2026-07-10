@@ -42,12 +42,18 @@
 
                     <div>
                         <label class="block text-sm font-medium text-white/90 mb-1.5">No. Telepon</label>
-                        <input type="text" name="no_telp" class="w-full px-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400/70 focus:border-blue-400/70 transition-all" value="{{ old('no_telp') }}" placeholder="08xxxxxxxxxx">
+                        <input type="text" name="no_telp" class="w-full px-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400/70 focus:border-blue-400/70 transition-all @error('no_telp') ring-2 ring-red-400/70 @enderror" value="{{ old('no_telp') }}" placeholder="08xxxxxxxxxx">
+                        @error('no_telp')
+                            <p class="text-red-300 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-white/90 mb-1.5">Tempat Lahir</label>
-                        <input type="text" name="tempat_lahir" class="w-full px-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400/70 focus:border-blue-400/70 transition-all" value="{{ old('tempat_lahir') }}" placeholder="Kota lahir">
+                        <input type="text" name="tempat_lahir" class="w-full px-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400/70 focus:border-blue-400/70 transition-all @error('tempat_lahir') ring-2 ring-red-400/70 @enderror" value="{{ old('tempat_lahir') }}" placeholder="Kota lahir">
+                        @error('tempat_lahir')
+                            <p class="text-red-300 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
