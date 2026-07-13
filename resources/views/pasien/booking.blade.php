@@ -8,7 +8,7 @@
     <p>Pilih dokter, tanggal, dan jam yang tersedia.</p>
 </div>
 
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-6">
     <form action="{{ route('pasien.booking.store') }}" method="POST" id="formBooking">
         @csrf
 
@@ -26,7 +26,7 @@
                 @error('dokter_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
 
                 <div id="jadwalInfo" class="mt-2 hidden">
-                    <p class="text-xs font-medium text-gray-500 mb-1">Jadwal praktik:</p>
+                    <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Jadwal praktik:</p>
                     <div id="jadwalList" class="flex flex-wrap gap-1"></div>
                 </div>
             </div>
@@ -40,11 +40,11 @@
         <div class="mb-4">
             <label class="form-label">Pilih Tanggal <span class="text-red-500">*</span></label>
             <div class="flex items-center gap-1">
-                <button type="button" id="prevPage" class="w-9 h-[58px] rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition flex items-center justify-center flex-shrink-0" title="Sebelumnya">
+                <button type="button" id="prevPage" class="w-9 h-[58px] rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 transition flex items-center justify-center flex-shrink-0" title="Sebelumnya">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 </button>
                 <div class="flex flex-wrap gap-1.5 flex-1" id="datePages"></div>
-                <button type="button" id="nextPage" class="w-9 h-[58px] rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition flex items-center justify-center flex-shrink-0" title="Selanjutnya">
+                <button type="button" id="nextPage" class="w-9 h-[58px] rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 transition flex items-center justify-center flex-shrink-0" title="Selanjutnya">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </button>
             </div>
