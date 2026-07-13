@@ -8,31 +8,31 @@
     <p>Kelola data pembayaran pasien. Verifikasi pembayaran QRIS & Tunai.</p>
 </div>
 
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
     <div class="flex items-center justify-between mb-4">
-        <h5 class="font-bold text-gray-800">Daftar Pembayaran</h5>
+        <h5 class="font-bold text-gray-800 dark:text-white">Daftar Pembayaran</h5>
         <a href="{{ route('admin.pembayaran.create') }}" class="btn-sm btn-primary">+ Tambah Pembayaran</a>
     </div>
     <div class="overflow-x-auto">
         <table id="dataTable" class="w-full text-left">
-            <thead class="bg-gray-50">
+            <thead class="bg-gray-50 dark:bg-gray-700">
                 <tr>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">No</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Pasien</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Obat</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Total Biaya</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Metode</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal Bayar</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">No</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Pasien</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Obat</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Total Biaya</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Metode</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Tanggal Bayar</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($data as $i => $p)
-                <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $i+1 }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $p->rekamMedis->pasien->user->name ?? '-' }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm text-xs max-w-[200px]">
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 text-sm dark:text-gray-300">{{ $i+1 }}</td>
+                    <td class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 text-sm dark:text-gray-200">{{ $p->rekamMedis->pasien->user->name ?? '-' }}</td>
+                    <td class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 text-sm dark:text-gray-300 text-xs max-w-[200px]">
                         @if($p->rekamMedis->resepObat->count())
                             @foreach($p->rekamMedis->resepObat as $ro)
                             <div>{{ $ro->obat->nama_obat ?? '-' }} x{{ $ro->jumlah }}</div>
@@ -43,11 +43,11 @@
                             -
                         @endif
                     </td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">Rp {{ number_format($p->total_biaya, 0, ',', '.') }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $p->metode_bayar ?? '-' }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm">{{ $p->tanggal_bayar ? \Carbon\Carbon::parse($p->tanggal_bayar)->format('Y-m-d') : '-' }}</td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm"><span class="badge-status badge-{{ $p->status_bayar }}">{{ $p->status_bayar == 'lunas' ? 'Lunas' : 'Belum Bayar' }}</span></td>
-                    <td class="px-4 py-3 border-b border-gray-100 text-sm flex gap-1 flex-wrap">
+                    <td class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 text-sm dark:text-gray-300">Rp {{ number_format($p->total_biaya, 0, ',', '.') }}</td>
+                    <td class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 text-sm dark:text-gray-300">{{ $p->metode_bayar ?? '-' }}</td>
+                    <td class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 text-sm dark:text-gray-300">{{ $p->tanggal_bayar ? \Carbon\Carbon::parse($p->tanggal_bayar)->format('Y-m-d') : '-' }}</td>
+                    <td class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 text-sm dark:text-gray-300"><span class="badge-status badge-{{ $p->status_bayar }}">{{ $p->status_bayar == 'lunas' ? 'Lunas' : 'Belum Bayar' }}</span></td>
+                    <td class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 text-sm flex gap-1 flex-wrap">
                         @if($p->status_bayar == 'belum_bayar')
                         <button onclick="openBayar({{ $p->id }}, {{ $p->total_biaya }}, '{{ $p->rekamMedis->resep_obat ? addslashes(str_replace(["\r\n", "\r", "\n"], '\\n', $p->rekamMedis->resep_obat)) : '' }}')" class="btn-sm btn-success">Bayar</button>
                         @endif
