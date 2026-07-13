@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans bg-gray-50">
+<body class="font-sans bg-gray-50 dark:bg-gray-900">
     <div class="flex h-screen overflow-hidden">
         <aside class="hidden lg:flex lg:flex-shrink-0">
             <div class="w-64 bg-gradient-to-b from-sky-800 via-sky-700 to-gray-900 flex flex-col">
@@ -63,47 +63,51 @@
         </aside>
 
         <div class="flex-1 flex flex-col min-w-0">
-            <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between lg:justify-end">
-                <button class="lg:hidden p-2 rounded-lg hover:bg-gray-100" onclick="document.querySelector('aside').classList.toggle('hidden')">
+            <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between lg:justify-end">
+                <button class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" onclick="document.querySelector('aside').classList.toggle('hidden')">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </button>
                 <div class="flex items-center gap-3">
+                    <button onclick="DarkMode.toggle()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition" title="Toggle Dark Mode">
+                        <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        <svg class="w-5 h-5 text-gray-500 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    </button>
                     <div class="relative" x-data="{ open: false }">
-                        <button @click="open = !open" class="relative p-2 rounded-lg hover:bg-gray-100 transition">
-                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                        <button @click="open = !open" class="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                            <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                             @php $unread = Auth::user()->unreadNotifications->count(); @endphp
                             @if($unread > 0)
                             <span class="absolute -top-0.5 -right-0.5 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">{{ $unread > 9 ? '9+' : $unread }}</span>
                             @endif
                         </button>
-                        <div x-show="open" @click.outside="open = false" class="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-200 z-50 max-h-96 overflow-y-auto" style="display: none;">
-                            <div class="p-3 border-b border-gray-100">
-                                <h6 class="font-bold text-gray-800 text-sm">Notifikasi</h6>
+                        <div x-show="open" @click.outside="open = false" class="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 z-50 max-h-96 overflow-y-auto" style="display: none;">
+                            <div class="p-3 border-b border-gray-100 dark:border-gray-700">
+                                <h6 class="font-bold text-gray-800 dark:text-gray-200 text-sm">Notifikasi</h6>
                             </div>
                             @forelse(Auth::user()->notifications->take(10) as $notif)
-                            <a href="{{ route('notifications.read', $notif->id) }}" class="block px-4 py-3 hover:bg-gray-50 border-b border-gray-50 {{ is_null($notif->read_at) ? 'bg-primary-50/50' : '' }}">
-                                <p class="text-sm text-gray-800">{{ $notif->data['message'] ?? 'Pesan baru' }}</p>
-                                <p class="text-xs text-gray-400 mt-1">{{ $notif->created_at->diffForHumans() }}</p>
+                            <a href="{{ route('notifications.read', $notif->id) }}" class="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-50 dark:border-gray-700 {{ is_null($notif->read_at) ? 'bg-primary-50/50 dark:bg-primary-900/30' : '' }}">
+                                <p class="text-sm text-gray-800 dark:text-gray-200">{{ $notif->data['message'] ?? 'Pesan baru' }}</p>
+                                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">{{ $notif->created_at->diffForHumans() }}</p>
                             </a>
                             @empty
-                            <p class="text-sm text-gray-400 text-center py-6">Belum ada notifikasi</p>
+                            <p class="text-sm text-gray-400 dark:text-gray-500 text-center py-6">Belum ada notifikasi</p>
                             @endforelse
                             @if(Auth::user()->notifications->count() > 0)
                             <form action="{{ route('notifications.read-all') }}" method="POST" class="p-2">
                                 @csrf
-                                <button class="w-full text-center text-xs text-primary-600 font-semibold py-2 hover:bg-primary-50 rounded-lg">Tandai semua telah dibaca</button>
+                                <button class="w-full text-center text-xs text-primary-600 dark:text-primary-400 font-semibold py-2 hover:bg-primary-50 dark:hover:bg-primary-900/30 rounded-lg">Tandai semua telah dibaca</button>
                             </form>
                             @endif
                         </div>
                     </div>
-                    <span class="text-sm text-gray-500 hidden sm:block">{{ Auth::user()->name }}</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400 hidden sm:block">{{ Auth::user()->name }}</span>
                     <span class="w-8 h-8 rounded-full overflow-hidden border-2 border-sky-200 inline-block flex-shrink-0">
                         <img src="{{ Auth::user()->foto ?? (Auth::user()->pasien->foto ?? 'https://i.pravatar.cc/300?u=' . urlencode(Auth::user()->email)) }}" alt="foto" class="w-full h-full object-cover">
                     </span>
                 </div>
             </header>
 
-            <main class="flex-1 overflow-y-auto p-6">
+            <main class="flex-1 overflow-y-auto p-6 dark:bg-gray-900 dark:text-gray-100">
                 @if (session('success'))
                 <div class="alert-success flex items-center gap-2 mb-4">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>

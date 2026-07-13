@@ -10,8 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans">
-    <nav class="bg-primary-900 text-white sticky top-0 z-50 shadow-lg">
+<body class="font-sans dark:bg-gray-900 dark:text-gray-100">
+    <nav class="bg-primary-900 dark:bg-gray-800 text-white sticky top-0 z-50 shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <a href="/" class="flex items-center gap-3 font-display font-extrabold text-xl tracking-tight">
@@ -22,6 +22,10 @@
                 </a>
                 <div class="flex items-center gap-1 sm:gap-2">
                     <a href="/" class="px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition">Beranda</a>
+                    <button onclick="DarkMode.toggle()" class="p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition" title="Toggle Dark Mode">
+                        <svg x-show="!DarkMode.isEnabled()" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                        <svg x-show="DarkMode.isEnabled()" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    </button>
                     @guest
                     <a href="{{ route('login') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition">Masuk</a>
                     <a href="{{ route('register') }}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-white text-primary-700 hover:bg-primary-50 transition shadow-sm">Daftar</a>
@@ -38,9 +42,9 @@
         </div>
     </nav>
 
-    <main>@yield('content')</main>
+    <main class="dark:bg-gray-900 dark:text-gray-100">@yield('content')</main>
 
-    <footer class="bg-gray-900 text-gray-400">
+    <footer class="bg-gray-900 dark:bg-gray-950 text-gray-400">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div class="md:col-span-2">
