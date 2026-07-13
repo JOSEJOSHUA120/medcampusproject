@@ -159,6 +159,11 @@
         @apply text-sm text-gray-500;
     }
 
+    /* Dark Mode Transition */
+    html {
+        @apply transition-colors duration-300;
+    }
+
     /* Dark Mode Components */
     .dark .stat-card,
     .dark .card-dashboard {
