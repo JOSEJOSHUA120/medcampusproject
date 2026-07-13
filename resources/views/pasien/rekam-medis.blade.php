@@ -12,22 +12,22 @@
     <div class="overflow-x-auto">
         <table class="w-full text-left">
             <thead>
-                <tr class="bg-gray-50">
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">No</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Dokter</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Diagnosa</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Obat</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
+                <tr class="bg-gray-50 dark:bg-gray-700">
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">No</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Tanggal</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Dokter</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Diagnosa</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Obat</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                 @foreach($data as $i => $r)
-                <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3 text-sm text-gray-500">{{ $i + 1 }}</td>
-                    <td class="px-4 py-3 text-sm">{{ $r->created_at->format('Y-m-d H:i') }}</td>
-                    <td class="px-4 py-3 text-sm">{{ $r->dokter->user->name ?? '-' }}</td>
-                    <td class="px-4 py-3 text-sm">{{ \Str::limit($r->diagnosa, 50) }}</td>
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $i + 1 }}</td>
+                    <td class="px-4 py-3 text-sm dark:text-gray-300">{{ $r->created_at->format('Y-m-d H:i') }}</td>
+                    <td class="px-4 py-3 text-sm dark:text-gray-300">{{ $r->dokter->user->name ?? '-' }}</td>
+                    <td class="px-4 py-3 text-sm dark:text-gray-300">{{ \Str::limit($r->diagnosa, 50) }}</td>
                     <td class="px-4 py-3 text-sm text-xs">
                         @if($r->resepObat->count())
                             @foreach($r->resepObat as $ro)
