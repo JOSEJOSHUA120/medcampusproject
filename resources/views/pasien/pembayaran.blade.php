@@ -12,24 +12,24 @@
     <div class="overflow-x-auto">
         <table class="w-full text-left">
             <thead>
-                <tr class="bg-gray-50">
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">No</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Deskripsi</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Total</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Metode</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
+                <tr class="bg-gray-50 dark:bg-gray-700">
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">No</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Tanggal</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Deskripsi</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Total</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Metode</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                    <th class="px-4 py-3 text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                 @foreach($data as $i => $p)
-                <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3 text-sm text-gray-500">{{ $i + 1 }}</td>
-                    <td class="px-4 py-3 text-sm">{{ $p->tanggal_bayar ? \Carbon\Carbon::parse($p->tanggal_bayar)->format('Y-m-d') : '-' }}</td>
-                    <td class="px-4 py-3 text-sm">Pemeriksaan {{ $p->rekamMedis->dokter->user->name ?? '-' }}</td>
-                    <td class="px-4 py-3 text-sm font-semibold text-gray-800">Rp {{ number_format($p->total_biaya, 0, ',', '.') }}</td>
-                    <td class="px-4 py-3 text-sm">{{ $p->metode_bayar ?? '-' }}</td>
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $i + 1 }}</td>
+                    <td class="px-4 py-3 text-sm dark:text-gray-300">{{ $p->tanggal_bayar ? \Carbon\Carbon::parse($p->tanggal_bayar)->format('Y-m-d') : '-' }}</td>
+                    <td class="px-4 py-3 text-sm dark:text-gray-300">Pemeriksaan {{ $p->rekamMedis->dokter->user->name ?? '-' }}</td>
+                    <td class="px-4 py-3 text-sm font-semibold text-gray-800 dark:text-white">Rp {{ number_format($p->total_biaya, 0, ',', '.') }}</td>
+                    <td class="px-4 py-3 text-sm dark:text-gray-300">{{ $p->metode_bayar ?? '-' }}</td>
                     <td class="px-4 py-3 text-sm"><span class="badge-status badge-{{ $p->status_bayar }}">{{ $p->status_bayar == 'lunas' ? 'Lunas' : 'Belum Bayar' }}</span></td>
                     <td class="px-4 py-3 text-sm">
                         @if($p->status_bayar == 'belum_bayar' && $p->total_biaya > 0)
@@ -48,16 +48,16 @@
 </div>
 
 <div id="modalBayar" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-screen overflow-y-auto p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-lg max-h-screen overflow-y-auto p-6">
         <div class="flex items-center justify-between mb-4">
-            <h5 class="font-bold text-gray-800 text-lg">Bayar Tagihan</h5>
-            <button onclick="closeModal()" class="p-1 hover:bg-gray-100 rounded-lg text-2xl">&times;</button>
+            <h5 class="font-bold text-gray-800 dark:text-white text-lg">Bayar Tagihan</h5>
+            <button onclick="closeModal()" class="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-2xl dark:text-gray-300">&times;</button>
         </div>
         <form id="formBayar" method="POST">
             @csrf @method('PUT')
-            <div class="mb-4 p-4 bg-gradient-to-r from-blue-50 to-sky-50 rounded-xl border border-blue-100">
-                <p class="text-sm text-gray-500">Total Tagihan</p>
-                <p id="totalTagihan" class="text-2xl font-bold text-gray-800">Rp 0</p>
+            <div class="mb-4 p-4 bg-gradient-to-r from-blue-50 to-sky-50 dark:from-blue-900/30 dark:to-sky-900/30 rounded-xl border border-blue-100 dark:border-blue-800">
+                <p class="text-sm text-gray-500 dark:text-gray-400">Total Tagihan</p>
+                <p id="totalTagihan" class="text-2xl font-bold text-gray-800 dark:text-white">Rp 0</p>
             </div>
 
             <div class="mb-4">
