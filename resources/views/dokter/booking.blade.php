@@ -9,7 +9,7 @@
 </div>
 
 @if($bookings->isEmpty())
-<div class="text-center py-12 text-gray-400">
+<div class="text-center py-12 text-gray-400 dark:text-gray-500">
     <p>Belum ada pasien aktif.</p>
 </div>
 @else
@@ -33,7 +33,7 @@
             default => 'bg-gray-100 text-gray-800',
         };
     @endphp
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-all">
         <div class="bg-gradient-to-r from-primary-600 to-primary-800 px-4 py-3 flex items-center gap-3">
             <img src="{{ $foto }}" alt="foto" class="w-10 h-10 rounded-full object-cover border-2 border-white/60 shadow">
             <div class="text-white min-w-0 flex-1">
@@ -48,20 +48,19 @@
             <div class="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
                 <div>
                     <span class="text-gray-400 uppercase tracking-wider text-[10px]">Email</span>
-                    <p class="font-medium text-gray-800 truncate text-xs">{{ $u?->email ?? '-' }}</p>
+                    <p class="font-medium text-gray-800 dark:text-gray-200 truncate text-xs">{{ $u?->email ?? '-' }}</p>
                 </div>
                 <div>
                     <span class="text-gray-400 uppercase tracking-wider text-[10px]">No. Telp</span>
-                    <p class="font-medium text-gray-800 text-xs">{{ $p?->no_telp ?? '-' }}</p>
+                    <p class="font-medium text-gray-800 dark:text-gray-200 text-xs">{{ $p?->no_telp ?? '-' }}</p>
                 </div>
                 <div>
                     <span class="text-gray-400 uppercase tracking-wider text-[10px]">Tgl Lahir</span>
-                    <p class="font-medium text-gray-800 text-xs">{{ $p?->tanggal_lahir ? \Carbon\Carbon::parse($p->tanggal_lahir)->format('d/m/Y') : '-' }}</p>
+                    <p class="font-medium text-gray-800 dark:text-gray-200 text-xs">{{ $p?->tanggal_lahir ? \Carbon\Carbon::parse($p->tanggal_lahir)->format('d/m/Y') : '-' }}</p>
                 </div>
                 <div>
                     <span class="text-gray-400 uppercase tracking-wider text-[10px]">JK</span>
-                    <p class="font-medium text-gray-800 text-xs">
-                        @if($p && $p->jenis_kelamin == 'L') Laki-Laki
+                    <p class="font-medium text-gray-800 dark:text-gray-200 text-xs">
                         @elseif($p && $p->jenis_kelamin == 'P') Perempuan
                         @else -
                         @endif
@@ -69,20 +68,20 @@
                 </div>
                 <div>
                     <span class="text-gray-400 uppercase tracking-wider text-[10px]">No. Booking</span>
-                    <p class="font-medium text-gray-800 text-xs">#{{ $b->id }}</p>
+                    <p class="font-medium text-gray-800 dark:text-gray-200 text-xs">#{{ $b->id }}</p>
                 </div>
                 <div>
                     <span class="text-gray-400 uppercase tracking-wider text-[10px]">Jam</span>
-                    <p class="font-medium text-gray-800 text-xs">{{ $b->jam_booking ? \Carbon\Carbon::parse($b->jam_booking)->format('H:i') : '-' }}</p>
+                    <p class="font-medium text-gray-800 dark:text-gray-200 text-xs">{{ $b->jam_booking ? \Carbon\Carbon::parse($b->jam_booking)->format('H:i') : '-' }}</p>
                 </div>
             </div>
             <div class="text-xs">
                 <span class="text-gray-400 uppercase tracking-wider text-[10px]">Tanggal</span>
-                <p class="font-medium text-gray-800 text-xs">{{ $b->tanggal_booking ? \Carbon\Carbon::parse($b->tanggal_booking)->format('d/m/Y') : '-' }}</p>
+                <p class="font-medium text-gray-800 dark:text-gray-200 text-xs">{{ $b->tanggal_booking ? \Carbon\Carbon::parse($b->tanggal_booking)->format('d/m/Y') : '-' }}</p>
             </div>
             <div class="text-xs">
                 <span class="text-gray-400 uppercase tracking-wider text-[10px]">Keluhan</span>
-                <p class="text-gray-700 bg-gray-50 rounded-md p-1.5 mt-0.5 text-xs">{{ $b->keluhan_awal ?? '-' }}</p>
+                <p class="text-gray-700 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 rounded-md p-1.5 mt-0.5 text-xs">{{ $b->keluhan_awal ?? '-' }}</p>
             </div>
             <hr class="border-gray-50">
             <div class="flex gap-1.5 flex-wrap pt-0.5">
