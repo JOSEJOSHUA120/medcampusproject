@@ -18,7 +18,9 @@
                 <a href="{{ route('dashboard') }}" class="bg-white text-primary-700 hover:bg-primary-50 font-semibold rounded-xl px-6 py-3 transition-all duration-200 shadow-lg hover:shadow-xl inline-block">Ke Dashboard</a>
                 @endguest
             </div>
-            <div class="text-center mt-8 lg:mt-0"></div>
+            <div class="text-center mt-8 lg:mt-0">
+                <img src="{{ asset('images/sticker-klinik.svg') }}" alt="Sticker Klinik Digital" class="mx-auto w-48 h-48 drop-shadow-2xl animate-bounce">
+            </div>
         </div>
     </div>
 </section>
@@ -78,4 +80,11 @@
         @endguest
     </div>
 </section>
+
+<footer class="py-10 bg-gray-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <img src="{{ asset('images/logo-klinik.svg') }}" alt="Logo MedCampus Klinik Digital" class="mx-auto mb-6" style="height: 80px;">
+        <p class="text-gray-400 text-sm">&copy; {{ date('Y') }} MEDCAMPUS - Klinik Digital. All rights reserved.</p>
+    </div>
+</footer>
 @endsection
