@@ -7,7 +7,7 @@
     <h4>{{ isset($pasien) ? 'Edit Pasien' : 'Tambah Pasien' }}</h4>
 </div>
 
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
     <form action="{{ isset($pasien) ? route('admin.pasien.update', $pasien->id) : route('admin.pasien.store') }}" method="POST">
         @csrf
         @if(isset($pasien)) @method('PUT') @endif
