@@ -74,15 +74,15 @@
     </div>
 </div>
 
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 lg:p-6">
-    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-gray-100">
+<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 lg:p-6">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-gray-100 dark:border-gray-700">
         <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-primary-100 text-primary-700 flex items-center justify-center">
+            <div class="w-9 h-9 rounded-xl bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-400 flex items-center justify-center">
                 <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
             </div>
             <div>
-                <h5 class="font-bold text-gray-800">Daftar Booking</h5>
-                <p class="text-xs text-gray-400">Gunakan filter atau kolom pencarian</p>
+                <h5 class="font-bold text-gray-800 dark:text-white">Daftar Booking</h5>
+                <p class="text-xs text-gray-400 dark:text-gray-500">Gunakan filter atau kolom pencarian</p>
             </div>
         </div>
     </div>
@@ -129,20 +129,20 @@
                     $filterGroup = in_array($b->status, ['disetujui', 'dipanggil', 'check_in']) ? 'aktif' : $b->status;
                 @endphp
                 <tr data-status="{{ $filterGroup }}">
-                    <td class="font-medium text-gray-900">{{ $i + 1 }}</td>
+                    <td class="font-medium text-gray-900 dark:text-white">{{ $i + 1 }}</td>
                     <td>
                         <div class="flex items-center gap-2.5">
-                            <img src="{{ $profil->foto ?? 'https://i.pravatar.cc/300?u=' . urlencode($pasienUser->email ?? '') }}" alt="foto" class="w-8 h-8 rounded-full object-cover border border-gray-200 flex-shrink-0">
+                            <img src="{{ $profil->foto ?? 'https://i.pravatar.cc/300?u=' . urlencode($pasienUser->email ?? '') }}" alt="foto" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-600 flex-shrink-0">
                             <div>
-                                <div class="font-semibold text-gray-800 text-sm leading-tight">{{ $pasienUser->name ?? '-' }}</div>
-                                <div class="text-[11px] text-gray-400">{{ $profil->no_telp ?? '-' }}</div>
+                                <div class="font-semibold text-gray-800 dark:text-gray-200 text-sm leading-tight">{{ $pasienUser->name ?? '-' }}</div>
+                                <div class="text-[11px] text-gray-400 dark:text-gray-500">{{ $profil->no_telp ?? '-' }}</div>
                             </div>
                         </div>
                     </td>
-                    <td class="font-medium text-gray-700">{{ $b->dokter->name }}</td>
-                    <td class="text-gray-600">{{ \Carbon\Carbon::parse($b->tanggal_booking)->format('d/m/Y') }}</td>
-                    <td class="font-semibold text-gray-800">@php try { echo \Carbon\Carbon::parse($b->jam_booking)->format('H:i'); } catch(\Exception $e) { echo '-'; } @endphp</td>
-                    <td class="text-gray-600 max-w-[160px]">
+                    <td class="font-medium text-gray-700 dark:text-gray-300">{{ $b->dokter->name }}</td>
+                    <td class="text-gray-600 dark:text-gray-400">{{ \Carbon\Carbon::parse($b->tanggal_booking)->format('d/m/Y') }}</td>
+                    <td class="font-semibold text-gray-800 dark:text-gray-200">@php try { echo \Carbon\Carbon::parse($b->jam_booking)->format('H:i'); } catch(\Exception $e) { echo '-'; } @endphp</td>
+                    <td class="text-gray-600 dark:text-gray-400 max-w-[160px]">
                         <span class="truncate block" title="{{ $b->keluhan_awal }}">{{ $b->keluhan_awal ?? '-' }}</span>
                     </td>
                     <td>
@@ -174,7 +174,7 @@
                                 </button>
                             </form>
                             @else
-                            <span class="text-gray-300 text-xs px-2 italic">Tidak ada aksi</span>
+                            <span class="text-gray-300 dark:text-gray-600 text-xs px-2 italic">Tidak ada aksi</span>
                             @endif
                         </div>
                     </td>
@@ -186,18 +186,18 @@
 </div>
 
 <div id="modalReject" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-fade-in">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md p-6 animate-fade-in">
         <div class="flex items-center justify-between mb-5">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
+                <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400 flex items-center justify-center">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
                 </div>
                 <div>
-                    <h5 class="font-bold text-gray-800">Tolak Booking</h5>
-                    <p class="text-xs text-gray-400">Booking akan ditandai sebagai ditolak</p>
+                    <h5 class="font-bold text-gray-800 dark:text-white">Tolak Booking</h5>
+                    <p class="text-xs text-gray-400 dark:text-gray-500">Booking akan ditandai sebagai ditolak</p>
                 </div>
             </div>
-            <button onclick="closeModal()" class="p-1.5 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-gray-600 transition">
+            <button onclick="closeModal()" class="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
